@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import './globals.css'
 
@@ -11,11 +11,6 @@ export const metadata: Metadata = {
     'Gerencie seus ganhos e despesas como motorista de aplicativo. Saiba em segundos se o seu dia está valendo a pena.',
   keywords: ['motorista', 'uber', 'financeiro', 'ganhos', 'despesas', 'controle'],
   manifest: '/manifest.json',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
-  ],
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
@@ -27,6 +22,16 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+  ],
+}
+
 /**
  * Root layout — wraps all pages.
  * ThemeProvider is added here so it covers auth pages too.
@@ -36,7 +41,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head />
-      <body className="min-h-screen bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-50">
+      <body
+        className="min-h-screen bg-white text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-50"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>
