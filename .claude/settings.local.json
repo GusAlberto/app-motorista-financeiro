@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"C:\\\\Users\\\\Gustavo Alberto\\\\.claude\\\\skills\\\\\" 2>/dev/null || echo \"Directory not found\")",
+      "Bash(grep -A5 '\"plugins\"' \"C:/Users/Gustavo Alberto/.claude.json\" | head -40)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "PowerShell(node --version)",
+      "WebFetch(domain:github.com)",
+      "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\node.exe\" -e \"require\\('uipro-cli'\\)\")",
+      "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" list -g)",
+      "PowerShell(& \"C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm\\\\uipro.cmd\" init --ai claude)",
+      "PowerShell(& \"C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm\\\\uipro.ps1\" init --ai claude)",
+      "PowerShell($env:PATH = \"C:\\\\Program Files\\\\nodejs;C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm;$env:PATH\"; & \"C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm\\\\uipro.ps1\" init --ai claude)"
+    ]
+  }
+}

@@ -67,16 +67,16 @@ export default function SignupPage() {
     setFieldErrors({})
     setLoading(true)
 
-    const { error: authError } = await supabase.auth.signUpWithPassword({
+    const { error: authError } = await supabase.auth.signUp({
       email: email.trim(),
       password,
-      options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      },
+      // options: {
+      //   emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
+      // },
     })
-
+    
     if (authError) {
-      setLoading(false)
+      setLoading(false)      
       if (authError.message.includes('already registered') || authError.message.includes('User already registered')) {
         setError(
           'Este email já está cadastrado. Tente fazer login ou recuperar sua senha.'
