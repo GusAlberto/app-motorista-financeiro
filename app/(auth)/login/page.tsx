@@ -33,13 +33,14 @@ export default function LoginPage() {
     setError(null)
     setLoading(true)
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
+    const { data, error: authError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     })
 
     if (authError) {
       setLoading(false)
+      console.error('Login error:', authError)
       // Translate Supabase error messages to Portuguese
       if (authError.message.includes('Invalid login credentials')) {
         setError('Email ou senha incorretos. Verifique seus dados e tente novamente.')
@@ -55,6 +56,11 @@ export default function LoginPage() {
       }
       return
     }
+
+    console.log('Login successful:', data.user?.email)
+
+    // Wait for session to be stored before redirecting
+    await new Promise(resolve => setTimeout(resolve, 500))
 
     router.push('/app/dashboard')
     router.refresh()
