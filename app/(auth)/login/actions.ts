@@ -18,5 +18,5 @@ export async function loginAction(email: string, password: string) {
     }
   }
 
-  redirect('/app/dashboard')
+  redirect('/dashboard')
 }
