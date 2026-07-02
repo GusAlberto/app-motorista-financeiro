@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Global base styles for app-motorista
+   Mobile-first, performance-focused, WCAG AA contrast
+   ============================================================ */
+
+@layer base {
+  /* Smooth scrolling — disabled when user prefers reduced motion */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* Tabular number rendering for financial data (prevents width jitter) */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Ensure touch targets are large enough (WCAG 2.5.5) */
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent iOS Safari from zooming on input focus (font-size >= 16px) */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Focus-visible: only show ring on keyboard navigation, not mouse click */
+@layer base {
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(59 130 246); /* blue-500 */
+    outline-offset: 2px;
+  }
+}
