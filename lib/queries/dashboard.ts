@@ -5,7 +5,7 @@
  * Uses Supabase client with RLS-enforced user isolation.
  */
 
-import { createClient } from '@/lib/supabase/server'
+import { createUserServerClient } from '@/lib/supabase/server'
 import type {
   PeriodType,
   PeriodStats,
@@ -73,7 +73,7 @@ function getPeriodLabel(period: PeriodType): string {
  * Fetch transactions for a given period (Server Component)
  */
 export async function getDashboardData(period: PeriodType = 'today'): Promise<DashboardData> {
-  const supabase = await createClient()
+  const supabase = await createUserServerClient()
   const { start, end } = getPeriodDateRange(period)
 
   try {
@@ -143,7 +143,7 @@ export async function getDashboardData(period: PeriodType = 'today'): Promise<Da
  * Fetch chart data (earnings vs expenses by day/week)
  */
 export async function getChartData(period: PeriodType = 'today'): Promise<ChartDataset> {
-  const supabase = await createClient()
+  const supabase = await createUserServerClient()
   const { start, end } = getPeriodDateRange(period)
 
   try {
