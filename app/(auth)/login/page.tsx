@@ -43,11 +43,14 @@ export default function LoginPage() {
       // Translate Supabase error messages to Portuguese
       if (authError.message.includes('Invalid login credentials')) {
         setError('Email ou senha incorretos. Verifique seus dados e tente novamente.')
-      } else if (authError.message.includes('Email not confirmed')) {
-        setError(
-          'Seu email ainda não foi verificado. Verifique sua caixa de entrada e clique no link de confirmação.'
-        )
-      } else {
+      }
+      // Email confirmation disabled for MVP (can be re-enabled in Phase 5)
+      // else if (authError.message.includes('Email not confirmed')) {
+      //   setError(
+      //     'Seu email ainda não foi verificado. Verifique sua caixa de entrada e clique no link de confirmação.'
+      //   )
+      // }
+      else {
         setError('Erro ao fazer login. Tente novamente em instantes.')
       }
       return
