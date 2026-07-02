@@ -5,24 +5,20 @@
  *
  * Login page — email + password form.
  * Mobile-first, full-width, large touch targets.
- * On success: redirects to /app/dashboard.
+ * On success: redirects to /app/dashboard (via Server Action).
  * On error: displays inline error message.
  */
 
 import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/client'
+import { loginAction } from './actions'
 import { cn } from '@/lib/utils/cn'
 
 // Note: 'use client' components cannot export metadata; parent layout handles title
 // export const metadata: Metadata = { title: 'Entrar' }
 
 export default function LoginPage() {
-  const router = useRouter()
-  const supabase = createClient()
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -33,37 +29,27 @@ export default function LoginPage() {
     setError(null)
     setLoading(true)
 
-    const { data, error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    })
+    try {
+      const result = await loginAction(email, password)
 
-    if (authError) {
+      if (result && !result.success) {
+        setLoading(false)
+        // Translate Supabase error messages to Portuguese
+        if (result.error.includes('Invalid login credentials')) {
+          setError('Email ou senha incorretos. Verifique seus dados e tente novamente.')
+        } else {
+          setError('Erro ao fazer login. Tente novamente em instantes.')
+        }
+        return
+      }
+
+      // If successful, loginAction will redirect via server-side redirect()
+      // This line won't be reached, but TypeScript needs it for control flow
+    } catch (err) {
       setLoading(false)
-      console.error('Login error:', authError)
-      // Translate Supabase error messages to Portuguese
-      if (authError.message.includes('Invalid login credentials')) {
-        setError('Email ou senha incorretos. Verifique seus dados e tente novamente.')
-      }
-      // Email confirmation disabled for MVP (can be re-enabled in Phase 5)
-      // else if (authError.message.includes('Email not confirmed')) {
-      //   setError(
-      //     'Seu email ainda não foi verificado. Verifique sua caixa de entrada e clique no link de confirmação.'
-      //   )
-      // }
-      else {
-        setError('Erro ao fazer login. Tente novamente em instantes.')
-      }
-      return
+      setError('Erro ao fazer login. Tente novamente em instantes.')
+      console.error('Login error:', err)
     }
-
-    console.log('Login successful:', data.user?.email)
-
-    // Wait for session to be stored before redirecting
-    await new Promise(resolve => setTimeout(resolve, 500))
-
-    router.push('/app/dashboard')
-    router.refresh()
   }
 
   return (
