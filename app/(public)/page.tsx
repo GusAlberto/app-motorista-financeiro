@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Smartphone, Zap, Lock, TrendingUp } from 'lucide-react';
+import { ArrowRight, Smartphone, Zap, ShieldCheck, TrendingUp, TrendingDown, Fuel } from 'lucide-react';
 import { APP_URL } from '@/lib/constants';
 
 export const metadata = {
@@ -19,6 +19,37 @@ export const metadata = {
   },
 };
 
+const FEATURES = [
+  {
+    icon: Zap,
+    title: 'Instantâneo',
+    description: 'Saldo atualizado em tempo real, sem esperar sincronizar.',
+    span: 'sm:col-span-2',
+    accent: 'amber',
+  },
+  {
+    icon: Smartphone,
+    title: 'Mobile-first',
+    description: 'Feito para o celular no suporte do carro, não encolhido do desktop.',
+    span: '',
+    accent: 'emerald',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Seus dados, só seus',
+    description: 'Isolamento total por usuário no banco de dados. Ninguém mais vê suas finanças.',
+    span: '',
+    accent: 'emerald',
+  },
+  {
+    icon: TrendingUp,
+    title: '3 toques para registrar',
+    description: 'Ganho de corrida ou gasto com combustível — lançado antes do próximo sinal fechar.',
+    span: 'sm:col-span-2',
+    accent: 'amber',
+  },
+];
+
 export default function Home() {
   const organizationSchema = {
     '@context': 'https://schema.org',
@@ -35,90 +66,179 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
-      <div className="min-h-screen bg-white dark:bg-slate-950">
-      {/* Hero */}
-      <section className="px-4 py-20 sm:py-28">
-        <div className="mx-auto max-w-3xl">
-          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-            Saiba em segundos se o dia valeu a pena
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 mb-8">
-            Dashboard financeiro em tempo real. Ganhos, despesas e lucro — exatamente o que você precisa enquanto dirige.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+
+      <div className="relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+        {/* Ambient glow — decorative, purely visual */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-40 left-1/2 h-[32rem] w-[32rem] -translate-x-1/2 rounded-full bg-amber-400/20 blur-[120px] dark:bg-amber-500/10"
+        />
+
+        {/* ============================================================ */}
+        {/* Hero */}
+        {/* ============================================================ */}
+        <section className="relative px-4 pb-16 pt-16 sm:pb-24 sm:pt-24">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-8">
+            {/* Copy */}
+            <div>
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-semibold tracking-wide text-amber-700 dark:text-amber-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden="true" />
+                GRÁTIS · SEM CARTÃO DE CRÉDITO
+              </div>
+
+              <h1 className="font-display text-4xl font-bold leading-[1.1] tracking-tight text-slate-900 sm:text-5xl lg:text-6xl dark:text-white">
+                Saiba em segundos se{' '}
+                <span className="text-amber-700 dark:text-amber-400">o dia valeu a pena</span>
+              </h1>
+
+              <p className="mt-6 max-w-lg text-lg leading-relaxed text-slate-600 dark:text-slate-400">
+                Ganhos, despesas e lucro líquido — atualizados na hora, no seu celular.
+                Feito para motoristas de Uber, 99 e InDrive que não têm tempo a perder.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/signup"
+                  className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-amber-500 px-6 font-semibold text-slate-950 shadow-lg shadow-amber-500/25 transition-all duration-200 hover:bg-amber-400 hover:shadow-amber-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:focus-visible:ring-offset-slate-950"
+                >
+                  Começar agora
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/how-it-works"
+                  className="inline-flex h-12 items-center justify-center rounded-xl border border-slate-300 px-6 font-semibold text-slate-900 transition-colors duration-200 hover:border-slate-400 hover:bg-slate-100 dark:border-slate-700 dark:text-white dark:hover:border-slate-600 dark:hover:bg-slate-900"
+                >
+                  Como funciona
+                </Link>
+              </div>
+
+              <p className="mt-4 text-sm text-slate-500 dark:text-slate-500">
+                Sem taxas escondidas. Cancele quando quiser (não que você vá querer).
+              </p>
+            </div>
+
+            {/* Visual — a crafted preview of the real dashboard, not a stock photo */}
+            <div className="relative">
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 -z-10 translate-y-6 scale-95 rounded-[2rem] bg-gradient-to-br from-amber-400/30 to-emerald-400/20 blur-2xl"
+              />
+              <div className="mx-auto max-w-sm rounded-[1.75rem] border border-slate-200 bg-white p-1.5 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/40">
+                <div className="rounded-[1.4rem] bg-slate-50 p-5 dark:bg-slate-950">
+                  <p className="font-display text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-500">
+                    Hoje, quinta-feira
+                  </p>
+
+                  <p className="mt-3 font-display text-4xl font-bold tabular-nums text-slate-900 dark:text-white">
+                    R$ 187,40
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                    Lucro líquido do dia
+                  </p>
+
+                  {/* Mini "chart" — decorative bars suggesting the real trend chart */}
+                  <div
+                    className="mt-6 flex h-16 items-end gap-1.5"
+                    role="img"
+                    aria-label="Gráfico ilustrativo de ganhos crescendo ao longo do dia"
+                  >
+                    {[38, 52, 44, 68, 58, 80, 71].map((h, i) => (
+                      <div
+                        key={i}
+                        className="flex-1 rounded-t-sm bg-gradient-to-t from-amber-500/40 to-amber-400"
+                        style={{ height: `${h}%` }}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="mt-6 grid grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+                      <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
+                        <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span className="text-xs font-semibold">Ganhos</span>
+                      </div>
+                      <p className="mt-1 font-display text-lg font-bold tabular-nums text-slate-900 dark:text-white">
+                        R$ 312,00
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+                      <div className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
+                        <Fuel className="h-3.5 w-3.5" aria-hidden="true" />
+                        <span className="text-xs font-semibold">Combustível</span>
+                      </div>
+                      <p className="mt-1 font-display text-lg font-bold tabular-nums text-slate-900 dark:text-white">
+                        R$ 124,60
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/* Features — bento grid, not a flat icon list */}
+        {/* ============================================================ */}
+        <section className="relative px-4 py-20 sm:py-28">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-12 max-w-xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
+                Feito para quem dirige, não para quem programa
+              </h2>
+              <p className="mt-3 text-lg text-slate-600 dark:text-slate-400">
+                Cada decisão de produto parte de uma pergunta: isso funciona com uma mão no volante?
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {FEATURES.map((feature) => {
+                const Icon = feature.icon;
+                const accentClasses =
+                  feature.accent === 'amber'
+                    ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                    : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400';
+
+                return (
+                  <div
+                    key={feature.title}
+                    className={`group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-colors duration-200 hover:border-slate-300 sm:p-8 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700 ${feature.span}`}
+                  >
+                    <div className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl ${accentClasses}`}>
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <h3 className="font-display text-xl font-bold text-slate-900 dark:text-white">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-2 text-slate-600 dark:text-slate-400">{feature.description}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================ */}
+        {/* CTA */}
+        {/* ============================================================ */}
+        <section className="relative px-4 pb-24">
+          <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-100 p-10 text-center shadow-xl shadow-slate-900/5 sm:p-16 dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 dark:shadow-black/20">
+            <h2 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
+              Pronto para saber quanto você realmente ganha?
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-lg text-slate-600 dark:text-slate-400">
+              Crie sua conta em menos de um minuto. Sem cartão, sem pegadinha.
+            </p>
             <Link
               href="/signup"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="group mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-amber-500 px-8 font-semibold text-slate-950 shadow-lg shadow-amber-500/25 transition-all duration-200 hover:bg-amber-400 hover:shadow-amber-500/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950"
             >
-              Começar agora <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/how-it-works"
-              className="inline-flex items-center justify-center px-6 py-3 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg font-semibold hover:bg-slate-50 dark:hover:bg-slate-900 transition"
-            >
-              Como funciona
+              Criar conta grátis
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="px-4 py-20 bg-slate-50 dark:bg-slate-900">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-12 text-center">
-            Tudo o que você precisa
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-8">
-            <div className="flex gap-4">
-              <Smartphone className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Mobile-First</h3>
-                <p className="text-slate-600 dark:text-slate-300">Rápido no seu celular, mesmo em conexão 4G lenta</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <Zap className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Instantâneo</h3>
-                <p className="text-slate-600 dark:text-slate-300">Veja seu saldo em tempo real, sempre sincronizado</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <Lock className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Seguro</h3>
-                <p className="text-slate-600 dark:text-slate-300">Seus dados financeiros protegidos com criptografia</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <TrendingUp className="w-6 h-6 text-blue-600 flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white mb-2">Produtividade</h3>
-                <p className="text-slate-600 dark:text-slate-300">Registre entradas/saídas em 3 toques</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="px-4 py-20">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
-            Pronto para começar?
-          </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-300 mb-8">
-            Registre-se agora e comece a acompanhar suas finanças em tempo real.
-          </p>
-          <Link
-            href="/signup"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
-          >
-            Criar conta grátis <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
     </>
   );
 }
