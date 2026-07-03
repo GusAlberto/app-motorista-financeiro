@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Smartphone, Zap, Lock, TrendingUp } from 'lucide-react';
+import { APP_URL } from '@/lib/constants';
 
 export const metadata = {
   title: 'app-motorista | Gestão Financeira para Motoristas de App',
@@ -7,7 +8,7 @@ export const metadata = {
   openGraph: {
     title: 'app-motorista | Gestão Financeira para Motoristas de App',
     description: 'Dashboard financeiro em tempo real para motoristas de aplicativo.',
-    url: 'https://app-motorista.vercel.app',
+    url: APP_URL,
     type: 'website',
     locale: 'pt_BR',
   },
@@ -24,7 +25,7 @@ export default function Home() {
     '@type': 'Organization',
     name: 'app-motorista',
     description: 'Dashboard financeiro em tempo real para motoristas de aplicativo',
-    url: 'https://app-motorista.vercel.app',
+    url: APP_URL,
     sameAs: ['https://github.com/GusAlberto/app-motorista-financeiro'],
   };
 

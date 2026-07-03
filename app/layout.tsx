@@ -1,9 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
+import { APP_URL } from '@/lib/constants'
 import './globals.css'
 
 export const metadata: Metadata = {
+  // Resolves relative URLs used elsewhere in the Metadata API (OG images,
+  // canonical links) against the real production domain instead of
+  // silently defaulting to http://localhost:3000.
+  metadataBase: new URL(APP_URL),
   title: {
     default: 'App Motorista — Controle Financeiro para Motoristas',
     template: '%s | App Motorista',
@@ -24,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    url: process.env.NEXT_PUBLIC_APP_URL,
+    url: APP_URL,
     siteName: 'App Motorista',
     title: 'App Motorista — Controle Financeiro para Motoristas',
     description:

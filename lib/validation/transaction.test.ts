@@ -109,6 +109,20 @@ describe('editTransactionSchema', () => {
     const result = editTransactionSchema.safeParse({ amount: -5 })
     expect(result.success).toBe(false)
   })
+
+  it('accepts any known income or expense category', () => {
+    expect(editTransactionSchema.safeParse({ category: 'ride' }).success).toBe(true)
+    expect(editTransactionSchema.safeParse({ category: 'fuel' }).success).toBe(true)
+  })
+
+  it('rejects an arbitrary category string outside the known set', () => {
+    // Regression test: editTransactionSchema.category used to be a free-form
+    // z.string() (any value up to 50 chars), letting an edited transaction
+    // end up with a category that doesn't exist anywhere else in the app
+    // (filters, labels). It must be restricted to the same enum as creation.
+    const result = editTransactionSchema.safeParse({ category: 'not-a-real-category' })
+    expect(result.success).toBe(false)
+  })
 })
 
 describe('category label maps', () => {

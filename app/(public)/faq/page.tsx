@@ -1,10 +1,12 @@
+import { APP_URL } from '@/lib/constants';
+
 export const metadata = {
   title: 'FAQ | app-motorista',
   description: 'Perguntas frequentes sobre app-motorista.',
   openGraph: {
     title: 'FAQ | app-motorista',
     description: 'Perguntas frequentes sobre app-motorista.',
-    url: 'https://app-motorista.vercel.app/faq',
+    url: `${APP_URL}/faq`,
     type: 'website',
   },
 };

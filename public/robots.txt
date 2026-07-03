@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /app/
-
-Sitemap: https://app-motorista.vercel.app/sitemap.xml

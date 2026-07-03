@@ -138,14 +138,22 @@ export default function SettingsPage() {
     setProfileError(null)
     setProfileSuccess(false)
 
-    // Upsert driver profile (insert or update)
+    // Upsert driver profile (insert or update).
+    // `driver_profiles.id` (not user_id) is the primary key, so without an
+    // explicit onConflict target, PostgREST defaults to matching on the PK
+    // — which is never present in this payload — and every save after the
+    // first would try to INSERT again and fail on the user_id UNIQUE
+    // constraint. Target user_id explicitly to make this a true upsert.
     const { error } = await supabase
       .from('driver_profiles')
-      .upsert({
-        user_id: user.id,
-        full_name: fullName.trim() || null,
-        phone: phone.trim() || null,
-      })
+      .upsert(
+        {
+          user_id: user.id,
+          full_name: fullName.trim() || null,
+          phone: phone.trim() || null,
+        },
+        { onConflict: 'user_id' }
+      )
 
     setProfileLoading(false)
     if (error) {

@@ -1,10 +1,12 @@
+import { APP_URL } from '@/lib/constants';
+
 export const metadata = {
   title: 'Como Funciona | app-motorista',
   description: 'Aprenda como usar o app-motorista para gerenciar suas finanças.',
   openGraph: {
     title: 'Como Funciona | app-motorista',
     description: 'Aprenda como usar o app-motorista para gerenciar suas finanças.',
-    url: 'https://app-motorista.vercel.app/how-it-works',
+    url: `${APP_URL}/how-it-works`,
     type: 'website',
   },
 };
@@ -18,13 +20,13 @@ export default function HowItWorks() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://app-motorista.vercel.app',
+        item: APP_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Como Funciona',
-        item: 'https://app-motorista.vercel.app/how-it-works',
+        item: `${APP_URL}/how-it-works`,
       },
     ],
   };
