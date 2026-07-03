@@ -11,6 +11,10 @@
 
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
+-- Drop first so this migration is safe to re-run (idempotent) — Postgres
+-- has no "CREATE POLICY IF NOT EXISTS".
+DROP POLICY IF EXISTS users_select_own_data ON public.users;
+
 -- SELECT: User may read only their own row
 CREATE POLICY users_select_own_data
   ON public.users
@@ -33,6 +37,12 @@ CREATE POLICY users_select_own_data
 -- =============================================================================
 
 ALTER TABLE public.driver_profiles ENABLE ROW LEVEL SECURITY;
+
+-- Drop first so this migration is safe to re-run (idempotent)
+DROP POLICY IF EXISTS driver_profiles_select_own_data ON public.driver_profiles;
+DROP POLICY IF EXISTS driver_profiles_insert_own_data ON public.driver_profiles;
+DROP POLICY IF EXISTS driver_profiles_update_own_data ON public.driver_profiles;
+DROP POLICY IF EXISTS driver_profiles_delete_own_data ON public.driver_profiles;
 
 -- SELECT: User sees only their own profile
 CREATE POLICY driver_profiles_select_own_data
@@ -69,6 +79,12 @@ CREATE POLICY driver_profiles_delete_own_data
 -- =============================================================================
 
 ALTER TABLE public.app_settings ENABLE ROW LEVEL SECURITY;
+
+-- Drop first so this migration is safe to re-run (idempotent)
+DROP POLICY IF EXISTS app_settings_select_own_data ON public.app_settings;
+DROP POLICY IF EXISTS app_settings_insert_own_data ON public.app_settings;
+DROP POLICY IF EXISTS app_settings_update_own_data ON public.app_settings;
+DROP POLICY IF EXISTS app_settings_delete_own_data ON public.app_settings;
 
 -- SELECT: User sees only their own settings
 CREATE POLICY app_settings_select_own_data

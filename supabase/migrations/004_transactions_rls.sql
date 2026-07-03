@@ -5,6 +5,13 @@
 -- Enable RLS on transactions table
 ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
 
+-- Drop policies first so this migration is safe to re-run (idempotent) —
+-- CREATE POLICY has no "IF NOT EXISTS" clause in Postgres.
+DROP POLICY IF EXISTS "Users can read their own transactions" ON public.transactions;
+DROP POLICY IF EXISTS "Users can insert their own transactions" ON public.transactions;
+DROP POLICY IF EXISTS "Users can update their own transactions" ON public.transactions;
+DROP POLICY IF EXISTS "Users can delete their own transactions" ON public.transactions;
+
 -- Policy: Users can only SELECT their own transactions
 CREATE POLICY "Users can read their own transactions"
   ON public.transactions
