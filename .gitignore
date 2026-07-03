@@ -46,10 +46,9 @@ supabase/.branches
 supabase/.temp
 supabase/functions/.zip
 
-# Test coverage
+# Test coverage & artifacts
 coverage/
 .nyc_output
-
-# PWA
-public/sw.js
-public/workbox-*.js
+/test-results/
+/playwright-report/
+/playwright/.cache/
