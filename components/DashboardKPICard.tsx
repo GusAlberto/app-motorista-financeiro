@@ -3,6 +3,8 @@
  *
  * Reusable KPI card component for displaying financial metrics.
  * Shows label, amount, icon, and optional trend indicator.
+ * `size="hero"` renders the larger treatment used for the day's headline
+ * number (net profit) — everything else is secondary by comparison.
  * Supports dark mode.
  */
 
@@ -14,6 +16,7 @@ interface DashboardKPICardProps {
   value: number
   icon?: ReactNode
   color?: 'green' | 'red' | 'blue' | 'neutral'
+  size?: 'default' | 'hero'
   trend?: {
     value: number
     direction: 'up' | 'down' | 'neutral'
@@ -22,64 +25,93 @@ interface DashboardKPICardProps {
   className?: string
 }
 
+const COLOR_CLASSES = {
+  green: {
+    border: 'border-emerald-200 dark:border-emerald-900/50',
+    bg: 'bg-emerald-50 dark:bg-emerald-950/30',
+    icon: 'text-emerald-700 dark:text-emerald-400',
+    value: 'text-emerald-700 dark:text-emerald-400',
+  },
+  red: {
+    border: 'border-red-200 dark:border-red-900/50',
+    bg: 'bg-red-50 dark:bg-red-950/30',
+    icon: 'text-red-700 dark:text-red-400',
+    value: 'text-red-700 dark:text-red-400',
+  },
+  blue: {
+    border: 'border-amber-200 dark:border-amber-900/50',
+    bg: 'bg-amber-50 dark:bg-amber-950/30',
+    icon: 'text-amber-700 dark:text-amber-400',
+    value: 'text-amber-700 dark:text-amber-400',
+  },
+  neutral: {
+    border: 'border-slate-200 dark:border-slate-800',
+    bg: 'bg-slate-50 dark:bg-slate-900/30',
+    icon: 'text-slate-600 dark:text-slate-400',
+    value: 'text-slate-900 dark:text-slate-50',
+  },
+} as const
+
+const trendColorClasses = {
+  up: 'text-emerald-700 dark:text-emerald-400',
+  down: 'text-red-700 dark:text-red-400',
+  neutral: 'text-slate-600 dark:text-slate-400',
+}
+
+const trendSymbol = {
+  up: '↑',
+  down: '↓',
+  neutral: '→',
+}
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+  }).format(value)
+}
+
 export function DashboardKPICard({
   label,
   value,
   icon,
   color = 'neutral',
+  size = 'default',
   trend,
   loading = false,
   className,
 }: DashboardKPICardProps) {
-  // Color scheme mapping
-  const colorClasses = {
-    green: 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900/50',
-    red: 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/50',
-    blue: 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/50',
-    neutral: 'bg-gray-50 dark:bg-gray-900/30 border-gray-200 dark:border-gray-800/50',
-  }
-
-  const iconColorClasses = {
-    green: 'text-green-600 dark:text-green-400',
-    red: 'text-red-600 dark:text-red-400',
-    blue: 'text-blue-600 dark:text-blue-400',
-    neutral: 'text-gray-600 dark:text-gray-400',
-  }
-
-  const trendColorClasses = {
-    up: 'text-green-600 dark:text-green-400',
-    down: 'text-red-600 dark:text-red-400',
-    neutral: 'text-gray-600 dark:text-gray-400',
-  }
-
-  const trendSymbol = {
-    up: '↑',
-    down: '↓',
-    neutral: '→',
-  }
+  const c = COLOR_CLASSES[color]
+  const isHero = size === 'hero'
 
   return (
     <div
       className={cn(
-        'rounded-lg border p-6 transition-all duration-200',
-        colorClasses[color],
+        'rounded-2xl border p-6 transition-shadow duration-200',
+        c.border,
+        c.bg,
+        isHero && 'p-8',
         className
       )}
     >
       <div className="flex items-start justify-between">
-        {/* Left side: label and trend */}
         <div className="flex-1">
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</p>
+          <p className={cn('font-medium text-slate-600 dark:text-slate-400', isHero ? 'text-sm' : 'text-sm')}>
+            {label}
+          </p>
           {loading ? (
-            <div className="mt-2 h-8 w-32 animate-pulse rounded bg-gray-300 dark:bg-gray-600" />
+            <div className={cn('mt-2 animate-pulse rounded bg-slate-200 dark:bg-slate-700', isHero ? 'h-12 w-48' : 'h-8 w-32')} />
           ) : (
             <>
-              <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-50">
-                {new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                  minimumFractionDigits: 2,
-                }).format(value)}
+              <p
+                className={cn(
+                  'mt-2 font-display font-bold tabular-nums',
+                  isHero ? 'text-4xl sm:text-5xl' : 'text-2xl sm:text-3xl',
+                  isHero ? c.value : 'text-slate-900 dark:text-slate-50',
+                )}
+              >
+                {formatCurrency(value)}
               </p>
               {trend && (
                 <p
@@ -88,24 +120,17 @@ export function DashboardKPICard({
                     trendColorClasses[trend.direction]
                   )}
                 >
-                  <span>{trendSymbol[trend.direction]}</span>
-                  <span>
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
-                      minimumFractionDigits: 2,
-                    }).format(Math.abs(trend.value))}
-                  </span>
+                  <span aria-hidden="true">{trendSymbol[trend.direction]}</span>
+                  <span>{formatCurrency(Math.abs(trend.value))}</span>
                 </p>
               )}
             </>
           )}
         </div>
 
-        {/* Right side: icon */}
         {icon && (
-          <div className={cn('rounded-full p-3', `bg-white/50 dark:bg-gray-800/50`)}>
-            <div className={cn('h-6 w-6', iconColorClasses[color])}>{icon}</div>
+          <div className={cn('flex-shrink-0 rounded-xl bg-white/60 p-3 dark:bg-slate-900/60', isHero && 'p-3.5')}>
+            <div className={cn(isHero ? 'h-7 w-7' : 'h-6 w-6', c.icon)}>{icon}</div>
           </div>
         )}
       </div>

@@ -4,6 +4,9 @@
  * Main dashboard page showing financial KPIs and analytics.
  * Server Component that fetches data for the selected period.
  * Protected by middleware.ts (requires authentication).
+ *
+ * Hierarchy: net profit is the hero number (the answer to "did today pay
+ * off?" — the app's core promise), earnings/expenses are secondary.
  */
 
 import { Suspense } from 'react'
@@ -15,7 +18,7 @@ import { PeriodSelector } from '@/components/PeriodSelector'
 import { EarningsChart } from '@/components/EarningsChart'
 import { DashboardErrorBoundary } from '@/components/DashboardErrorBoundary'
 import { DashboardSkeleton } from '@/components/DashboardSkeleton'
-import { TrendingUp, TrendingDown, DollarSign, Plus } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, Plus, Receipt } from 'lucide-react'
 import type { PeriodType } from '@/types/dashboard'
 
 export const metadata: Metadata = {
@@ -41,16 +44,16 @@ async function DashboardContent({ period }: { period: PeriodType }) {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50">Dashboard</h1>
-          <p className="mt-1 text-gray-600 dark:text-gray-400">
-            Visão geral dos seus ganhos e despesas — {dashboardData.period_label}
+          <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-slate-50">Dashboard</h1>
+          <p className="mt-1 text-slate-600 dark:text-slate-400">
+            {dashboardData.period_label}
           </p>
         </div>
         <Link
           href="/transactions"
-          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700"
+          className="flex h-11 items-center gap-2 rounded-xl bg-amber-500 px-4 font-semibold text-slate-950 shadow-sm transition-colors hover:bg-amber-400"
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-5 w-5" aria-hidden="true" />
           <span>Nova Transação</span>
         </Link>
       </div>
@@ -58,58 +61,68 @@ async function DashboardContent({ period }: { period: PeriodType }) {
       {/* Period Selector */}
       <PeriodSelector />
 
-      {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      {/* Hero: Net Profit — the headline number */}
+      <DashboardKPICard
+        label="Lucro líquido"
+        value={stats.net_profit}
+        icon={<DollarSign className="h-full w-full" aria-hidden="true" />}
+        color={stats.net_profit >= 0 ? 'green' : 'red'}
+        size="hero"
+      />
+
+      {/* Secondary: Earnings / Expenses */}
+      <div className="grid gap-4 sm:grid-cols-2">
         <DashboardKPICard
           label="Ganhos"
           value={stats.total_income}
-          icon={<TrendingUp className="h-full w-full" />}
+          icon={<TrendingUp className="h-full w-full" aria-hidden="true" />}
           color="green"
         />
         <DashboardKPICard
           label="Despesas"
           value={stats.total_expenses}
-          icon={<TrendingDown className="h-full w-full" />}
+          icon={<TrendingDown className="h-full w-full" aria-hidden="true" />}
           color="red"
-        />
-        <DashboardKPICard
-          label="Lucro Líquido"
-          value={stats.net_profit}
-          icon={<DollarSign className="h-full w-full" />}
-          color={stats.net_profit >= 0 ? 'green' : 'red'}
         />
       </div>
 
       {/* Chart */}
       {hasData ? (
-        <EarningsChart data={chartData.data} type="line" />
+        <EarningsChart data={chartData.data} />
       ) : (
-        <div className="rounded-lg border border-dashed border-gray-300 p-12 text-center dark:border-gray-700">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-300 p-12 text-center dark:border-slate-700">
+          <Receipt className="h-8 w-8 text-slate-400 dark:text-slate-600" aria-hidden="true" />
+          <p className="text-sm text-slate-600 dark:text-slate-400">
             Nenhuma transação registrada ainda. Comece a registrar seus ganhos e despesas!
           </p>
+          <Link
+            href="/transactions"
+            className="mt-1 text-sm font-semibold text-amber-700 hover:underline dark:text-amber-400"
+          >
+            Registrar primeira transação →
+          </Link>
         </div>
       )}
 
       {/* Quick Stats */}
       {hasData && (
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900/50">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
               Total de Transações
             </p>
-            <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-50">
+            <p className="mt-2 font-display text-2xl font-bold tabular-nums text-slate-900 dark:text-slate-50">
               {stats.transaction_count}
             </p>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">
               {stats.income_count} ganhos, {stats.expense_count} despesas
             </p>
           </div>
-          <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900/50">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
               Ticket Médio
             </p>
-            <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-50">
+            <p className="mt-2 font-display text-2xl font-bold tabular-nums text-slate-900 dark:text-slate-50">
               {new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
@@ -119,7 +132,7 @@ async function DashboardContent({ period }: { period: PeriodType }) {
                   : 0
               )}
             </p>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">
               Média por transação
             </p>
           </div>

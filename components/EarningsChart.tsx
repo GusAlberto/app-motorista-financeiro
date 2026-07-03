@@ -2,18 +2,16 @@
  * components/EarningsChart.tsx
  *
  * Earnings vs expenses chart using Recharts.
- * Displays trend data over selected period.
- * Supports dark mode.
+ * Displays trend data over selected period as a smooth gradient-filled
+ * area chart. Supports dark mode.
  */
 
 'use client'
 
 import { useMemo } from 'react'
 import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -27,7 +25,6 @@ import { cn } from '@/lib/utils/cn'
 
 interface EarningsChartProps {
   data: ChartDataPoint[]
-  type?: 'line' | 'bar'
   height?: number
   loading?: boolean
   className?: string
@@ -40,10 +37,12 @@ function ChartTooltip({ active, payload }: any) {
   if (!active || !payload) return null
 
   return (
-    <div className="rounded-lg border border-gray-300 bg-white p-3 shadow-lg dark:border-gray-600 dark:bg-gray-800">
-      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{payload[0]?.payload.date}</p>
+    <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+      <p className="mb-1 font-display text-sm font-semibold text-slate-900 dark:text-slate-100">
+        {payload[0]?.payload.date}
+      </p>
       {payload.map((entry: any, index: number) => (
-        <p key={index} style={{ color: entry.color }} className="text-sm">
+        <p key={index} style={{ color: entry.color }} className="text-sm font-medium tabular-nums">
           {entry.name}:{' '}
           {new Intl.NumberFormat('pt-BR', {
             style: 'currency',
@@ -57,7 +56,6 @@ function ChartTooltip({ active, payload }: any) {
 
 export function EarningsChart({
   data,
-  type = 'line',
   height = 300,
   loading = false,
   className,
@@ -65,13 +63,13 @@ export function EarningsChart({
   const { resolvedTheme } = useTheme()
   const isDark = resolvedTheme === 'dark'
 
-  // Chart colors
+  // Chart colors — matched to the app's emerald (income) / red (expense) semantics
   const colors = useMemo(
     () => ({
-      income: isDark ? '#10b981' : '#059669',
-      expenses: isDark ? '#ef4444' : '#dc2626',
-      gridColor: isDark ? '#374151' : '#e5e7eb',
-      textColor: isDark ? '#9ca3af' : '#6b7280',
+      income: isDark ? '#34d399' : '#059669',
+      expenses: isDark ? '#f87171' : '#dc2626',
+      gridColor: isDark ? '#1e293b' : '#e2e8f0',
+      textColor: isDark ? '#64748b' : '#94a3b8',
     }),
     [isDark]
   )
@@ -80,12 +78,12 @@ export function EarningsChart({
     return (
       <div
         className={cn(
-          'rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900/30',
+          'rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900',
           className
         )}
         style={{ height: height + 100 }}
       >
-        <div className="h-full animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+        <div className="h-full animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" />
       </div>
     )
   }
@@ -94,45 +92,53 @@ export function EarningsChart({
     return (
       <div
         className={cn(
-          'rounded-lg border border-gray-200 bg-gray-50 p-6 text-center dark:border-gray-800 dark:bg-gray-900/30',
+          'flex items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-center dark:border-slate-700 dark:bg-slate-900/50',
           className
         )}
         style={{ height }}
       >
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Nenhum dado disponível para este período
         </p>
       </div>
     )
   }
 
-  const ChartComponent = type === 'line' ? LineChart : BarChart
-  const DataComponent = type === 'line' ? Line : Bar
-
   return (
     <div
       className={cn(
-        'rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900/50 p-6',
+        'rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900',
         className
       )}
     >
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-50 mb-4">
+      <h3 className="mb-4 font-display text-lg font-bold text-slate-900 dark:text-slate-50">
         Ganhos vs Despesas
       </h3>
       <ResponsiveContainer width="100%" height={height}>
-        <ChartComponent
-          data={data}
-          margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-        >
-          <CartesianGrid stroke={colors.gridColor} strokeDasharray="3 3" />
+        <AreaChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+          <defs>
+            <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={colors.income} stopOpacity={0.3} />
+              <stop offset="95%" stopColor={colors.income} stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={colors.expenses} stopOpacity={0.3} />
+              <stop offset="95%" stopColor={colors.expenses} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid stroke={colors.gridColor} strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="date"
             stroke={colors.textColor}
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: '12px', fontFamily: 'var(--font-sans)' }}
+            tickLine={false}
+            axisLine={false}
           />
           <YAxis
             stroke={colors.textColor}
-            style={{ fontSize: '12px' }}
+            style={{ fontSize: '12px', fontFamily: 'var(--font-sans)' }}
+            tickLine={false}
+            axisLine={false}
             tickFormatter={(value) =>
               new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
@@ -142,26 +148,26 @@ export function EarningsChart({
             }
           />
           <Tooltip content={<ChartTooltip />} />
-          <Legend
-            wrapperStyle={{
-              color: colors.textColor,
-            }}
-          />
-          <DataComponent
+          <Legend wrapperStyle={{ color: colors.textColor, fontSize: '13px' }} />
+          <Area
+            type="monotone"
             dataKey="income"
-            stroke={colors.income}
-            fill={colors.income}
             name="Ganhos"
+            stroke={colors.income}
+            strokeWidth={2}
+            fill="url(#incomeGradient)"
             isAnimationActive={false}
           />
-          <DataComponent
+          <Area
+            type="monotone"
             dataKey="expenses"
-            stroke={colors.expenses}
-            fill={colors.expenses}
             name="Despesas"
+            stroke={colors.expenses}
+            strokeWidth={2}
+            fill="url(#expenseGradient)"
             isAnimationActive={false}
           />
-        </ChartComponent>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   )
