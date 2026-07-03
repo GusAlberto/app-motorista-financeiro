@@ -5,6 +5,7 @@ import { TransactionItem } from '@/components/TransactionItem'
 import { DeleteTransactionConfirm } from '@/components/DeleteTransactionConfirm'
 import { EditTransactionModal } from '@/components/EditTransactionModal'
 import { useTransactionForm } from '@/lib/hooks/useTransactionForm'
+import { formatCalendarDate } from '@/lib/utils/date'
 import type { Database } from '@/types/database'
 
 type Transaction = Database['public']['Tables']['transactions']['Row']
@@ -18,41 +19,47 @@ interface TransactionListProps {
 }
 
 /**
- * Calculate the date range for a period
+ * Calculate the date range for a period (as ISO YYYY-MM-DD strings)
+ * Using strings avoids timezone conversion issues
  */
-function getPeriodDateRange(period: string): { start: Date; end: Date } {
-  const end = new Date()
-  const start = new Date()
+function getPeriodDateRange(period: string): { start: string; end: string } {
+  const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD in local context
+  const startDate = new Date()
+  const endDate = new Date()
 
   switch (period) {
     case 'today':
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      return {
+        start: today,
+        end: today,
+      }
     case 'week':
-      const day = end.getDay()
-      const diff = end.getDate() - day + (day === 0 ? -6 : 1)
-      start.setDate(diff)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      const day = startDate.getDay()
+      const diff = startDate.getDate() - day + (day === 0 ? -6 : 1)
+      startDate.setDate(diff)
+      return {
+        start: startDate.toISOString().split('T')[0],
+        end: today,
+      }
     case 'month':
-      start.setDate(1)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      startDate.setDate(1)
+      return {
+        start: startDate.toISOString().split('T')[0],
+        end: today,
+      }
     case 'year':
-      start.setMonth(0, 1)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      startDate.setMonth(0, 1)
+      return {
+        start: startDate.toISOString().split('T')[0],
+        end: today,
+      }
     default:
-      start.setDate(1)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
+      startDate.setDate(1)
+      return {
+        start: startDate.toISOString().split('T')[0],
+        end: today,
+      }
   }
-
-  return { start, end }
 }
 
 /**
@@ -68,9 +75,9 @@ function filterTransactions(
   const { start, end } = getPeriodDateRange(period)
 
   return transactions.filter((tx) => {
-    // Filter by period
-    const txDate = new Date(tx.transaction_date)
-    if (txDate < start || txDate > end) return false
+    // Filter by period (compare dates as YYYY-MM-DD strings to avoid timezone conversion)
+    const txDateStr = tx.transaction_date.split('T')[0]
+    if (txDateStr < start || txDateStr > end) return false
 
     // Filter by type
     if (type !== 'all' && tx.type !== type) return false
@@ -97,7 +104,7 @@ function groupByDate(transactions: Transaction[]): Map<string, Transaction[]> {
   const grouped = new Map<string, Transaction[]>()
 
   transactions.forEach((tx) => {
-    const dateStr = new Date(tx.transaction_date).toLocaleDateString('pt-BR', {
+    const dateStr = formatCalendarDate(tx.transaction_date, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',

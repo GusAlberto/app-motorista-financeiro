@@ -77,9 +77,11 @@ export function TransactionItem({
         </div>
       </div>
 
-      {/* Center: Time */}
+      {/* Center: Time the transaction was logged (created_at is a real
+          instant; transaction_date is a calendar date with no meaningful
+          time-of-day, so it must NOT be used here). */}
       <div className="flex-shrink-0 text-xs text-slate-500 dark:text-slate-400">
-        {new Date(transaction.transaction_date).toLocaleTimeString('pt-BR', {
+        {new Date(transaction.created_at).toLocaleTimeString('pt-BR', {
           hour: '2-digit',
           minute: '2-digit',
         })}

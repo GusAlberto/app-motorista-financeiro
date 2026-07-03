@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { EXPENSE_CATEGORIES } from '@/lib/validation/transaction'
+import { getLocalDateString } from '@/lib/utils/date'
 
 interface ExpenseFormData {
   type: 'expense'
   amount: number
   category: string
   description?: string
-  transaction_date: Date
+  transaction_date: string // ISO date string (YYYY-MM-DD) in user's local timezone
 }
 
 interface ExpenseFormProps {
@@ -40,7 +41,7 @@ function SubmitButton() {
 }
 
 export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: ExpenseFormProps) {
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
+  const [date, setDate] = useState<string>(getLocalDateString())
   const [category, setCategory] = useState<string>('fuel')
   const [amount, setAmount] = useState<string>('')
   const [description, setDescription] = useState<string>('')
@@ -57,7 +58,7 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
         amount: parseFloat(amount),
         category,
         description: description || undefined,
-        transaction_date: new Date(date),
+        transaction_date: date, // Send as ISO string, not Date — server treats as local date
       }
 
       // Basic validation
@@ -75,7 +76,9 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
         newErrors.transaction_date = 'Data é obrigatória'
       }
 
-      if (new Date(date) > new Date()) {
+      // Check if date is in the future using date string comparison
+      const todayStr = getLocalDateString()
+      if (date > todayStr) {
         newErrors.transaction_date = 'A data não pode ser no futuro'
       }
 
@@ -93,7 +96,7 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
       // Reset form
       setAmount('')
       setDescription('')
-      setDate(new Date().toISOString().split('T')[0])
+      setDate(getLocalDateString())
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Falha ao registrar despesa'
       setErrors({ submit: message })

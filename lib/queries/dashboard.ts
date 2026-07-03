@@ -6,6 +6,7 @@
  */
 
 import { createUserServerClient } from '@/lib/supabase/server'
+import { getLocalDateString, formatCalendarDate } from '@/lib/utils/date'
 import type {
   PeriodType,
   PeriodStats,
@@ -16,38 +17,48 @@ import type {
 } from '@/types/dashboard'
 
 /**
- * Get the date range for a given period (from today)
+ * Get the date range for a given period as calendar-date bounds.
+ *
+ * Transactions are stored at UTC midnight of their local calendar date
+ * (see actions.ts). To match them we build bounds from the LOCAL calendar
+ * date — `getLocalDateString` uses local get* accessors, not toISOString
+ * (which is UTC and would shift "today" a day in the evening). The bounds
+ * themselves are suffixed with `Z` so they compare against the stored
+ * `...T00:00:00Z` timestamps on the same (UTC) footing.
  */
-function getPeriodDateRange(period: PeriodType): { start: Date; end: Date } {
-  const end = new Date()
-  const start = new Date()
+function getPeriodDateRange(period: PeriodType): { start: string; end: string } {
+  const today = getLocalDateString() // local YYYY-MM-DD
+  const startDate = new Date()
 
   switch (period) {
     case 'today':
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
-    case 'week':
+      return {
+        start: `${today}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
+    case 'week': {
       // Start from Monday of this week
-      const day = end.getDay()
-      const diff = end.getDate() - day + (day === 0 ? -6 : 1)
-      start.setDate(diff)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      const day = startDate.getDay()
+      const diff = startDate.getDate() - day + (day === 0 ? -6 : 1)
+      startDate.setDate(diff)
+      return {
+        start: `${getLocalDateString(startDate)}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
+    }
     case 'month':
-      start.setDate(1)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      startDate.setDate(1)
+      return {
+        start: `${getLocalDateString(startDate)}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
     case 'year':
-      start.setMonth(0, 1)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      startDate.setMonth(0, 1)
+      return {
+        start: `${getLocalDateString(startDate)}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
   }
-
-  return { start, end }
 }
 
 /**
@@ -55,13 +66,16 @@ function getPeriodDateRange(period: PeriodType): { start: Date; end: Date } {
  */
 function getPeriodLabel(period: PeriodType): string {
   const today = new Date()
-  const { start } = getPeriodDateRange(period)
 
   switch (period) {
     case 'today':
       return `Hoje, ${today.toLocaleDateString('pt-BR', { weekday: 'short' })}`
-    case 'week':
-      return `Semana (${start.toLocaleDateString('pt-BR')})`
+    case 'week': {
+      const { start } = getPeriodDateRange(period)
+      // start is "YYYY-MM-DDT00:00:00Z" — take the date part for display
+      const startDate = new Date(start).toLocaleDateString('pt-BR')
+      return `Semana (${startDate})`
+    }
     case 'month':
       return today.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
     case 'year':
@@ -81,8 +95,8 @@ export async function getDashboardData(period: PeriodType = 'today'): Promise<Da
     const { data: transactions, error: transactionError } = await supabase
       .from('transactions')
       .select('*')
-      .gte('transaction_date', start.toISOString())
-      .lte('transaction_date', end.toISOString())
+      .gte('transaction_date', start)
+      .lte('transaction_date', end)
       .order('transaction_date', { ascending: false })
 
     if (transactionError) {
@@ -150,8 +164,8 @@ export async function getChartData(period: PeriodType = 'today'): Promise<ChartD
     const { data: transactions, error } = await supabase
       .from('transactions')
       .select('type, amount, transaction_date')
-      .gte('transaction_date', start.toISOString())
-      .lte('transaction_date', end.toISOString())
+      .gte('transaction_date', start)
+      .lte('transaction_date', end)
       .order('transaction_date', { ascending: true })
 
     if (error) throw error
@@ -161,7 +175,7 @@ export async function getChartData(period: PeriodType = 'today'): Promise<ChartD
 
     if (transactions) {
       transactions.forEach((tx) => {
-        const dateStr = new Date(tx.transaction_date).toLocaleDateString('pt-BR')
+        const dateStr = formatCalendarDate(tx.transaction_date)
 
         if (!dataByDate[dateStr]) {
           dataByDate[dateStr] = {

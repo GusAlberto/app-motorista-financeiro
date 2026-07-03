@@ -57,9 +57,13 @@ const baseTransactionSchema = {
     .optional()
     .or(z.literal('')),
   transaction_date: z
-    .date()
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format')
     .refine(
-      (date) => date <= new Date(),
+      (dateStr) => {
+        const today = new Date().toISOString().split('T')[0]
+        return dateStr <= today
+      },
       'Transaction date cannot be in the future'
     ),
 }

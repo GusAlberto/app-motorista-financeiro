@@ -53,6 +53,13 @@ export async function createTransaction(data: any): Promise<ActionResult> {
       }
     }
 
+    // Convert date string to ISO timestamp
+    // The client sends YYYY-MM-DD (user's local date, no timezone offset).
+    // We convert to midnight UTC of that date to preserve the user's intended date
+    // regardless of their timezone. This avoids the "madrugada" bug where
+    // new Date("2024-03-03") → UTC midnight → converts back to user's TZ = day before.
+    const isoTimestamp = `${validated.transaction_date}T00:00:00Z`
+
     // Prepare database record
     const insertData: Database['public']['Tables']['transactions']['Insert'] = {
       user_id: user.id,
@@ -60,7 +67,7 @@ export async function createTransaction(data: any): Promise<ActionResult> {
       category: validated.category,
       amount: validated.amount,
       description: validated.description || null,
-      transaction_date: validated.transaction_date.toISOString(),
+      transaction_date: isoTimestamp,
     }
 
     // Insert into database
@@ -144,7 +151,7 @@ export async function updateTransaction(
     if (validated.category !== undefined) updateData.category = validated.category
     if (validated.description !== undefined) updateData.description = validated.description
     if (validated.transaction_date !== undefined) {
-      updateData.transaction_date = validated.transaction_date.toISOString()
+      updateData.transaction_date = `${validated.transaction_date}T00:00:00Z`
     }
 
     // Update transaction
