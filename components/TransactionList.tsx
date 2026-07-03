@@ -1,8 +1,10 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { TransactionItem } from '@/components/TransactionItem'
-import { ChevronRight } from 'lucide-react'
+import { DeleteTransactionConfirm } from '@/components/DeleteTransactionConfirm'
+import { EditTransactionModal } from '@/components/EditTransactionModal'
+import { useTransactionForm } from '@/lib/hooks/useTransactionForm'
 import type { Database } from '@/types/database'
 
 type Transaction = Database['public']['Tables']['transactions']['Row']
@@ -148,17 +150,21 @@ export function TransactionList({
 
   const balances = useMemo(() => calculateRunningBalance(filtered), [filtered])
 
+  const { handleDeleteTransaction, handleUpdateTransaction } = useTransactionForm()
+  const [deleteTarget, setDeleteTarget] = useState<Transaction | null>(null)
+  const [editTarget, setEditTarget] = useState<Transaction | null>(null)
+
   if (filtered.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4">
         <div className="text-center">
           <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            No transactions found
+            Nenhuma transação encontrada
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {transactions.length === 0
-              ? 'Start by logging your first transaction'
-              : 'Try adjusting your filters'}
+              ? 'Comece registrando sua primeira transação'
+              : 'Tente ajustar os filtros'}
           </p>
         </div>
       </div>
@@ -166,11 +172,12 @@ export function TransactionList({
   }
 
   return (
+    <>
     <div className="divide-y divide-gray-200 dark:divide-gray-700">
       {Array.from(grouped.entries()).map(([dateStr, dateTransactions]) => (
         <div key={dateStr}>
           {/* Date Header */}
-          <div className="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-700 sticky top-20 z-5">
+          <div className="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-700">
             <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">
               {dateStr}
             </p>
@@ -183,6 +190,8 @@ export function TransactionList({
                 key={transaction.id}
                 transaction={transaction}
                 runningBalance={balances.get(transaction.id) || 0}
+                onEdit={() => setEditTarget(transaction)}
+                onDelete={() => setDeleteTarget(transaction)}
               />
             ))}
           </div>
@@ -202,7 +211,7 @@ export function TransactionList({
 
               return (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Daily Total</span>
+                  <span className="text-gray-600 dark:text-gray-400">Total do Dia</span>
                   <div className="flex items-center gap-4">
                     <span className="text-green-600 dark:text-green-400 font-semibold">
                       +R$ {income.toFixed(2).replace('.', ',')}
@@ -245,19 +254,19 @@ export function TransactionList({
               <span className="text-base font-bold text-gray-900 dark:text-white">Total</span>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Income</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Ganhos</p>
                   <p className="text-lg font-bold text-green-600 dark:text-green-400">
                     R$ {income.toFixed(2).replace('.', ',')}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Expenses</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Despesas</p>
                   <p className="text-lg font-bold text-red-600 dark:text-red-400">
                     R$ {expenses.toFixed(2).replace('.', ',')}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Net</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Líquido</p>
                   <p
                     className={`text-lg font-bold ${
                       net >= 0
@@ -274,5 +283,30 @@ export function TransactionList({
         })()}
       </div>
     </div>
+
+    {/* Delete confirmation modal */}
+    {deleteTarget && (
+      <DeleteTransactionConfirm
+        transaction={deleteTarget}
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={async (id) => {
+          await handleDeleteTransaction(id)
+        }}
+      />
+    )}
+
+    {/* Edit modal */}
+    {editTarget && (
+      <EditTransactionModal
+        transaction={editTarget}
+        isOpen={!!editTarget}
+        onClose={() => setEditTarget(null)}
+        onSave={async (id, data) => {
+          await handleUpdateTransaction(id, data)
+        }}
+      />
+    )}
+    </>
   )
 }

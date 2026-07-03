@@ -2,9 +2,15 @@
 
 import { useState } from 'react'
 import { Edit2, Trash2 } from 'lucide-react'
+import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '@/lib/validation/transaction'
 import type { Database } from '@/types/database'
 
 type Transaction = Database['public']['Tables']['transactions']['Row']
+
+// Lookup map: category value -> Portuguese label
+const CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
+  [...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES].map((c) => [c.value, c.label])
+)
 
 interface TransactionItemProps {
   transaction: Transaction
@@ -61,13 +67,16 @@ function formatCurrency(amount: number): string {
 }
 
 /**
- * Format category name
+ * Format category name to its Portuguese label (fallback: title-case the raw value)
  */
 function formatCategory(category: string): string {
-  return category
-    .split('_')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
+  return (
+    CATEGORY_LABELS[category] ||
+    category
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  )
 }
 
 export function TransactionItem({
@@ -137,14 +146,14 @@ export function TransactionItem({
               <button
                 onClick={() => onEdit?.(transaction)}
                 className="p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
-                title="Edit transaction"
+                title="Editar transação"
               >
                 <Edit2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
               </button>
               <button
                 onClick={() => onDelete?.(transaction.id)}
                 className="p-2 rounded-lg hover:bg-red-100 dark:hover:bg-red-900 transition-colors"
-                title="Delete transaction"
+                title="Excluir transação"
               >
                 <Trash2 className="w-4 h-4 text-red-600 dark:text-red-400" />
               </button>

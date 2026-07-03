@@ -12,6 +12,19 @@ interface TransactionFiltersProps {
   defaultSearch?: string
 }
 
+const PERIOD_LABELS: Record<string, string> = {
+  today: 'Hoje',
+  week: 'Esta Semana',
+  month: 'Este Mês',
+  year: 'Este Ano',
+}
+
+const TYPE_LABELS: Record<string, string> = {
+  all: 'Todos os Tipos',
+  income: 'Ganhos',
+  expense: 'Despesas',
+}
+
 export function TransactionFilters({
   defaultPeriod = 'month',
   defaultType = 'all',
@@ -90,7 +103,7 @@ export function TransactionFilters({
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
         <input
           type="text"
-          placeholder="Search by description or category..."
+          placeholder="Buscar por descrição ou categoria..."
           value={search}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
@@ -106,10 +119,10 @@ export function TransactionFilters({
           disabled={isPending}
           className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white disabled:opacity-50"
         >
-          <option value="today">Today</option>
-          <option value="week">This Week</option>
-          <option value="month">This Month</option>
-          <option value="year">This Year</option>
+          <option value="today">Hoje</option>
+          <option value="week">Esta Semana</option>
+          <option value="month">Este Mês</option>
+          <option value="year">Este Ano</option>
         </select>
 
         {/* Type select */}
@@ -119,9 +132,9 @@ export function TransactionFilters({
           disabled={isPending}
           className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white disabled:opacity-50"
         >
-          <option value="all">All Types</option>
-          <option value="income">Income</option>
-          <option value="expense">Expenses</option>
+          <option value="all">Todos os Tipos</option>
+          <option value="income">Ganhos</option>
+          <option value="expense">Despesas</option>
         </select>
 
         {/* Category select (only when type is selected) */}
@@ -132,7 +145,7 @@ export function TransactionFilters({
             disabled={isPending}
             className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white disabled:opacity-50"
           >
-            <option value="">All Categories</option>
+            <option value="">Todas as Categorias</option>
             {availableCategories.map((cat) => (
               <option key={cat.value} value={cat.value}>
                 {cat.label}
@@ -149,7 +162,7 @@ export function TransactionFilters({
             className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors disabled:opacity-50"
           >
             <X className="w-4 h-4" />
-            Clear
+            Limpar
           </button>
         )}
       </div>
@@ -159,7 +172,7 @@ export function TransactionFilters({
         <div className="flex flex-wrap gap-2">
           {period !== 'month' && (
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
-              <span>Period: {period}</span>
+              <span>Período: {PERIOD_LABELS[period] || period}</span>
               <button
                 onClick={() => handlePeriodChange('month')}
                 className="hover:text-blue-600 dark:hover:text-blue-300"
@@ -171,7 +184,7 @@ export function TransactionFilters({
 
           {type !== 'all' && (
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
-              <span>Type: {type}</span>
+              <span>Tipo: {TYPE_LABELS[type] || type}</span>
               <button
                 onClick={() => handleTypeChange('all')}
                 className="hover:text-blue-600 dark:hover:text-blue-300"
@@ -183,7 +196,7 @@ export function TransactionFilters({
 
           {category && (
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
-              <span>Category: {category}</span>
+              <span>Categoria: {[...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES].find((c) => c.value === category)?.label || category}</span>
               <button
                 onClick={() => handleCategoryChange('')}
                 className="hover:text-blue-600 dark:hover:text-blue-300"
@@ -195,7 +208,7 @@ export function TransactionFilters({
 
           {search && (
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
-              <span>Search: "{search}"</span>
+              <span>Busca: "{search}"</span>
               <button
                 onClick={() => handleSearchChange('')}
                 className="hover:text-blue-600 dark:hover:text-blue-300"

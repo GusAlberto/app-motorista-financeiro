@@ -44,15 +44,15 @@ export function EditTransactionModal({
       const newErrors: Record<string, string> = {}
 
       if (!amount || parseFloat(amount) <= 0) {
-        newErrors.amount = 'Amount must be greater than 0'
+        newErrors.amount = 'O valor deve ser maior que 0'
       }
 
       if (!category) {
-        newErrors.category = 'Category is required'
+        newErrors.category = 'Categoria é obrigatória'
       }
 
       if (new Date(transactionDate) > new Date()) {
-        newErrors.transactionDate = 'Transaction date cannot be in the future'
+        newErrors.transactionDate = 'A data não pode ser no futuro'
       }
 
       if (Object.keys(newErrors).length > 0) {
@@ -72,7 +72,7 @@ export function EditTransactionModal({
       onClose()
     } catch (error) {
       setErrors({
-        submit: error instanceof Error ? error.message : 'Failed to save transaction',
+        submit: error instanceof Error ? error.message : 'Falha ao salvar transação',
       })
     } finally {
       setIsSaving(false)
@@ -87,7 +87,7 @@ export function EditTransactionModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Edit {transaction.type === 'income' ? 'Income' : 'Expense'}
+            Editar {transaction.type === 'income' ? 'Ganho' : 'Despesa'}
           </h2>
           <button
             onClick={onClose}
@@ -102,7 +102,7 @@ export function EditTransactionModal({
           {/* Amount */}
           <div className="space-y-2">
             <label htmlFor="amount" className="block text-sm font-semibold text-gray-900 dark:text-white">
-              Amount (R$)
+              Valor (R$)
             </label>
             <input
               id="amount"
@@ -123,7 +123,7 @@ export function EditTransactionModal({
           {/* Category */}
           <div className="space-y-2">
             <label htmlFor="category" className="block text-sm font-semibold text-gray-900 dark:text-white">
-              Category
+              Categoria
             </label>
             <select
               id="category"
@@ -145,7 +145,7 @@ export function EditTransactionModal({
           {/* Date */}
           <div className="space-y-2">
             <label htmlFor="date" className="block text-sm font-semibold text-gray-900 dark:text-white">
-              Date
+              Data
             </label>
             <input
               id="date"
@@ -162,7 +162,7 @@ export function EditTransactionModal({
           {/* Description */}
           <div className="space-y-2">
             <label htmlFor="description" className="block text-sm font-semibold text-gray-900 dark:text-white">
-              Description (optional)
+              Descrição (opcional)
             </label>
             <textarea
               id="description"
@@ -190,7 +190,7 @@ export function EditTransactionModal({
               disabled={isSaving}
               className="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"
@@ -200,10 +200,10 @@ export function EditTransactionModal({
               {isSaving ? (
                 <>
                   <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                  Saving...
+                  Salvando...
                 </>
               ) : (
-                'Save Changes'
+                'Salvar Alterações'
               )}
             </button>
           </div>
