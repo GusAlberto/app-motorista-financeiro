@@ -149,4 +149,44 @@
   .dark .btn-primary:hover {
     background-color: rgb(226 232 240); /* slate-200 */
   }
+
+  /* Standalone sheen for surfaces that are ALWAYS light regardless of
+     site theme (e.g. the white "Signup" pill on the always-dark desktop
+     navbar) — a dark sweep, not tied to the .dark-ancestor flip that
+     .btn-sheen uses, so it stays correct even when the page itself is
+     in light mode. Fully independent rule (not layered on .btn-sheen)
+     to avoid a specificity fight with `.dark .btn-sheen`. */
+  .btn-sheen-invert {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .btn-sheen-invert::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 20%, rgb(0 0 0 / 0.12) 50%, transparent 80%);
+    transform: translateX(-120%);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .btn-sheen-invert:hover::after,
+  .btn-sheen-invert:focus-visible::after {
+    transform: translateX(120%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-sheen-invert::after {
+      display: none;
+    }
+  }
+
+  /* Subtle dot-grid texture for the always-dark floating desktop navbar —
+     evokes a technical/premium surface without adding color. */
+  .dot-texture {
+    background-image: radial-gradient(circle, rgb(255 255 255 / 0.35) 1px, transparent 1px);
+    background-size: 15px 15px;
+  }
 }
