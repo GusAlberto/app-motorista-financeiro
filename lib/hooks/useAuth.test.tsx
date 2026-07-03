@@ -2,13 +2,7 @@ import { renderHook, act, waitFor } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // --- Mocks ---
-const push = vi.fn()
-const refresh = vi.fn()
-const signOut = vi.fn().mockResolvedValue({ error: null })
-
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push, refresh }),
-}))
+const logoutAction = vi.fn().mockResolvedValue(undefined)
 
 vi.mock('@/lib/supabase/client', () => ({
   createClient: () => ({
@@ -17,21 +11,22 @@ vi.mock('@/lib/supabase/client', () => ({
       onAuthStateChange: vi.fn().mockReturnValue({
         data: { subscription: { unsubscribe: vi.fn() } },
       }),
-      signOut,
     },
   }),
+}))
+
+vi.mock('@/app/(app)/actions', () => ({
+  logoutAction: () => logoutAction(),
 }))
 
 import { useAuth } from './useAuth'
 
 describe('useAuth().logout', () => {
   beforeEach(() => {
-    push.mockClear()
-    refresh.mockClear()
-    signOut.mockClear()
+    logoutAction.mockClear()
   })
 
-  it('signs the user out and redirects to the home page', async () => {
+  it('signs the user out server-side (clears the auth cookie, not just client state)', async () => {
     const { result } = renderHook(() => useAuth())
 
     // Wait for initial session hydration to settle
@@ -41,10 +36,9 @@ describe('useAuth().logout', () => {
       await result.current.logout()
     })
 
-    // 1. Signed out of the account
-    expect(signOut).toHaveBeenCalledTimes(1)
-    // 2. Redirected to HOME (not /login)
-    expect(push).toHaveBeenCalledWith('/')
-    expect(refresh).toHaveBeenCalled()
+    // logout() must delegate to the server action — a client-only
+    // supabase.auth.signOut() would leave the middleware-visible auth
+    // cookie intact, letting a "logged out" user still load /dashboard.
+    expect(logoutAction).toHaveBeenCalledTimes(1)
   })
 })

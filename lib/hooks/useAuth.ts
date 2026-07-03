@@ -9,13 +9,13 @@
  * Usage:
  *   const { user, session, loading, logout } = useAuth()
  *
- * Must be used inside a Client Component (uses browser Supabase client + router).
+ * Must be used inside a Client Component (uses the browser Supabase client).
  */
 
 import { useEffect, useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import type { Session } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
+import { logoutAction } from '@/app/(app)/actions'
 import type { User, AuthContext } from '@/types/auth'
 
 /**
@@ -37,7 +37,6 @@ function mapSupabaseUser(supabaseUser: { id: string; email?: string; created_at:
  * @returns {AuthContext} User, session, loading state, and logout function
  */
 export function useAuth(): AuthContext {
-  const router = useRouter()
   const supabase = createClient()
 
   const [user, setUser] = useState<User | null>(null)
@@ -47,7 +46,7 @@ export function useAuth(): AuthContext {
   useEffect(() => {
     let mounted = true
 
-    // Hydrate initial session from Supabase (may be in localStorage)
+    // Hydrate initial session from Supabase (stored in cookies, shared with the server)
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       if (!mounted) return
       setSession(initialSession)
@@ -73,13 +72,16 @@ export function useAuth(): AuthContext {
 
   /**
    * Sign out the current user.
-   * Clears Supabase session and redirects to the home page (/).
+   *
+   * Runs server-side (logoutAction) so the auth cookies are cleared via
+   * the HTTP response — this is what middleware.ts checks on protected
+   * routes. A client-only supabase.auth.signOut() would only clear the
+   * browser's copy of the session and could leave a stale cookie that
+   * still lets a "logged out" user load /dashboard directly.
    */
   const logout = useCallback(async () => {
-    await supabase.auth.signOut()
-    router.push('/')
-    router.refresh()
-  }, [supabase, router])
+    await logoutAction()
+  }, [])
 
   return { user, session, loading, logout }
 }
