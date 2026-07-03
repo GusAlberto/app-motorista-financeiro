@@ -7,49 +7,55 @@
  * is actually used (dashboard mounted, one thumb free). A top navbar link
  * list would sit outside comfortable thumb reach; a bottom bar doesn't.
  * Hidden on md+ where the Navbar's horizontal links take over.
+ *
+ * The raised "+" in the middle is the app's core action — logging a
+ * ganho/despesa — so it's promoted out of the flat tab row into an
+ * elevated, filled, sheen-on-press button that opens the quick-add sheet
+ * from ANY app page (dashboard, ajustes) without navigating first.
  */
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Receipt, Settings } from 'lucide-react'
-import { cn } from '@/lib/utils/cn'
+import { useState } from 'react'
+import { LayoutDashboard, Receipt, Settings, Plus } from 'lucide-react'
+import { InteractiveMenu, type InteractiveMenuItem } from '@/components/ui/modern-mobile-menu'
+import { QuickAddModal } from '@/components/QuickAddModal'
 
-const TABS = [
+const TABS: InteractiveMenuItem[] = [
   { href: '/dashboard', label: 'Início', icon: LayoutDashboard },
   { href: '/transactions', label: 'Transações', icon: Receipt },
   { href: '/settings', label: 'Ajustes', icon: Settings },
 ]
 
 export function BottomNav() {
-  const pathname = usePathname()
+  const [addOpen, setAddOpen] = useState(false)
+
+  const quickAddButton = (
+    <button
+      type="button"
+      onClick={() => setAddOpen(true)}
+      aria-label="Registrar ganho ou despesa"
+      className={[
+        'btn-primary btn-sheen',
+        'flex h-12 w-12 shrink-0 -translate-y-2 items-center justify-center rounded-full',
+        'shadow-lg shadow-slate-900/30 ring-4 ring-white transition-transform',
+        'hover:-translate-y-2.5 active:translate-y-0 active:scale-95',
+        'dark:shadow-black/50 dark:ring-slate-950',
+      ].join(' ')}
+    >
+      <Plus className="h-6 w-6" strokeWidth={2.5} aria-hidden="true" />
+    </button>
+  )
 
   return (
-    <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/90 backdrop-blur-lg md:hidden dark:border-slate-800 dark:bg-slate-950/90"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
-      aria-label="Navegação principal"
-    >
-      <div className="mx-auto flex h-16 max-w-md items-stretch justify-around px-2">
-        {TABS.map(({ href, label, icon: Icon }) => {
-          const isActive = pathname === href || pathname?.startsWith(`${href}/`)
-          return (
-            <Link
-              key={href}
-              href={href}
-              aria-current={isActive ? 'page' : undefined}
-              className={cn(
-                'flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-lg text-xs font-medium transition-colors',
-                isActive
-                  ? 'text-slate-900 dark:text-white'
-                  : 'text-slate-500 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300',
-              )}
-            >
-              <Icon className={cn('h-5 w-5', isActive && 'fill-slate-900/10 dark:fill-white/10')} strokeWidth={isActive ? 2.25 : 2} aria-hidden="true" />
-              {label}
-            </Link>
-          )
-        })}
-      </div>
-    </nav>
+    <>
+      <nav
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/90 backdrop-blur-lg md:hidden dark:border-slate-800 dark:bg-slate-950/90"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        aria-label="Navegação principal"
+      >
+        <InteractiveMenu items={TABS} centerAction={quickAddButton} className="mx-auto h-16 max-w-md px-2" />
+      </nav>
+
+      <QuickAddModal open={addOpen} onClose={() => setAddOpen(false)} />
+    </>
   )
 }
