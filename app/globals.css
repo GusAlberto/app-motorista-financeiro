@@ -194,7 +194,26 @@
   .menu {
     display: flex;
     align-items: stretch;
-    justify-content: space-around;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  /* Left items take remaining space */
+  .menu > :not(button):nth-child(-n+2) {
+    flex: 1 1 0%;
+  }
+
+  /* Center the action button (always a button) */
+  .menu > button {
+    position: absolute;
+    left: 50%;
+    top: 25%;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Right items take remaining space */
+  .menu > :not(button):nth-child(n+3) {
+    flex: 1 1 0%;
   }
 
   .menu__item {
