@@ -11,7 +11,26 @@
       "PowerShell(& \"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\" list -g)",
       "PowerShell(& \"C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm\\\\uipro.cmd\" init --ai claude)",
       "PowerShell(& \"C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm\\\\uipro.ps1\" init --ai claude)",
-      "PowerShell($env:PATH = \"C:\\\\Program Files\\\\nodejs;C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm;$env:PATH\"; & \"C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm\\\\uipro.ps1\" init --ai claude)"
+      "PowerShell($env:PATH = \"C:\\\\Program Files\\\\nodejs;C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm;$env:PATH\"; & \"C:\\\\Users\\\\Gustavo Alberto\\\\AppData\\\\Roaming\\\\npm\\\\uipro.ps1\" init --ai claude)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
-  }
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR}/.claude/skills/impeccable/scripts/hook.mjs\"",
+            "timeout": 5,
+            "statusMessage": "Checking UI changes"
+          }
+        ]
+      }
+    ]
+  },
+  "description": "Impeccable design detector: runs after Edit/Write/MultiEdit on UI files and surfaces findings as system reminders."
 }

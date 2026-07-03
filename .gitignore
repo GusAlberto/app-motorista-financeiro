@@ -46,10 +46,17 @@ supabase/.branches
 supabase/.temp
 supabase/functions/.zip
 
-# Test coverage
+# Test coverage & artifacts
 coverage/
 .nyc_output
+/test-results/
+/playwright-report/
+/playwright/.cache/
 
-# PWA
-public/sw.js
-public/workbox-*.js
+# Python (ui-ux-pro-max skill)
+__pycache__/
+*.pyc
+
+# impeccable skill — local/machine-specific runtime state (not shared config)
+.impeccable/*.local.json
+.impeccable/hook.cache.json

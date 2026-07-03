@@ -56,7 +56,7 @@ export function createServerClient(): SupabaseClient<Database> {
  *
  * Requires @supabase/ssr package.
  */
-export async function createUserServerClient(): Promise<SupabaseClient<Database>> {
+export async function createUserServerClient() {
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
       'Missing Supabase environment variables for user server client.'
@@ -65,12 +65,12 @@ export async function createUserServerClient(): Promise<SupabaseClient<Database>
 
   const cookieStore = await cookies()
 
-  return createSSRClient<Database>(supabaseUrl, supabaseAnonKey, {
+  return createSSRClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll()
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet: Array<{ name: string; value: string; options?: any }>) {
         try {
           cookiesToSet.forEach(({ name, value, options }) =>
             cookieStore.set(name, value, options)

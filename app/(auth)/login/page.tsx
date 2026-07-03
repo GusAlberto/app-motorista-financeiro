@@ -5,24 +5,26 @@
  *
  * Login page — email + password form.
  * Mobile-first, full-width, large touch targets.
- * On success: redirects to /app/dashboard.
+ * On success: redirects to /dashboard (via Server Action).
  * On error: displays inline error message.
  */
 
 import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/client'
+import { loginAction } from './actions'
 import { cn } from '@/lib/utils/cn'
 
 // Note: 'use client' components cannot export metadata; parent layout handles title
-// export const metadata: Metadata = { title: 'Entrar' }
+
+const inputClasses = cn(
+  'h-12 w-full rounded-xl border border-slate-300 px-4',
+  'bg-white text-base text-slate-900 placeholder-slate-400',
+  'transition-colors focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10',
+  'dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder-slate-500',
+  'dark:focus:border-white dark:focus:ring-white/10',
+)
 
 export default function LoginPage() {
-  const router = useRouter()
-  const supabase = createClient()
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -33,33 +35,32 @@ export default function LoginPage() {
     setError(null)
     setLoading(true)
 
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email: email.trim(),
-      password,
-    })
+    try {
+      const result = await loginAction(email, password)
 
-    if (authError) {
-      setLoading(false)
-      // Translate Supabase error messages to Portuguese
-      if (authError.message.includes('Invalid login credentials')) {
-        setError('Email ou senha incorretos. Verifique seus dados e tente novamente.')
-      } else if (authError.message.includes('Email not confirmed')) {
-        setError(
-          'Seu email ainda não foi verificado. Verifique sua caixa de entrada e clique no link de confirmação.'
-        )
-      } else {
-        setError('Erro ao fazer login. Tente novamente em instantes.')
+      if (result && !result.success) {
+        setLoading(false)
+        // Translate Supabase error messages to Portuguese
+        if (result.error.includes('Invalid login credentials')) {
+          setError('Email ou senha incorretos. Verifique seus dados e tente novamente.')
+        } else {
+          setError(result.error.includes('Muitas tentativas') ? result.error : 'Erro ao fazer login. Tente novamente em instantes.')
+        }
+        return
       }
-      return
-    }
 
-    router.push('/app/dashboard')
-    router.refresh()
+      // If successful, loginAction will redirect via server-side redirect()
+      // This line won't be reached, but TypeScript needs it for control flow
+    } catch (err) {
+      setLoading(false)
+      setError('Erro ao fazer login. Tente novamente em instantes.')
+      console.error('Login error:', err)
+    }
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-      <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-50">
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <h2 className="mb-6 font-display text-xl font-bold text-slate-900 dark:text-slate-50">
         Entrar na sua conta
       </h2>
 
@@ -68,7 +69,7 @@ export default function LoginPage() {
         {error && (
           <div
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
+            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-400"
           >
             {error}
           </div>
@@ -78,7 +79,7 @@ export default function LoginPage() {
         <div className="flex flex-col gap-1.5">
           <label
             htmlFor="email"
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="text-sm font-medium text-slate-700 dark:text-slate-300"
           >
             Email
           </label>
@@ -90,13 +91,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="seu@email.com"
-            className={cn(
-              'h-12 w-full rounded-xl border border-gray-300 px-4',
-              'bg-white text-base text-gray-900 placeholder-gray-400',
-              'transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-              'dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-500',
-              'dark:focus:border-blue-400',
-            )}
+            className={inputClasses}
             disabled={loading}
           />
         </div>
@@ -106,13 +101,13 @@ export default function LoginPage() {
           <div className="flex items-center justify-between">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-slate-700 dark:text-slate-300"
             >
               Senha
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+              className="text-sm font-medium text-slate-900 hover:underline dark:text-white"
             >
               Esqueceu a senha?
             </Link>
@@ -125,13 +120,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className={cn(
-              'h-12 w-full rounded-xl border border-gray-300 px-4',
-              'bg-white text-base text-gray-900 placeholder-gray-400',
-              'transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-              'dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-500',
-              'dark:focus:border-blue-400',
-            )}
+            className={inputClasses}
             disabled={loading}
           />
         </div>
@@ -141,10 +130,8 @@ export default function LoginPage() {
           type="submit"
           disabled={loading || !email || !password}
           className={cn(
-            'mt-2 flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-blue-600 text-base font-semibold text-white',
-            'transition-colors hover:bg-blue-700 active:bg-blue-800',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+            'btn-primary btn-sheen mt-2 flex h-12 w-full items-center justify-center rounded-xl',
+            'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
             'disabled:cursor-not-allowed disabled:opacity-50',
           )}
         >
@@ -153,11 +140,11 @@ export default function LoginPage() {
       </form>
 
       {/* Sign up link */}
-      <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+      <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
         Não tem uma conta?{' '}
         <Link
           href="/signup"
-          className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="font-medium text-slate-900 hover:underline dark:text-white"
         >
           Criar conta gratuita
         </Link>

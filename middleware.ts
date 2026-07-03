@@ -21,7 +21,7 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
  * Routes that require authentication (prefix match).
  * Unauthenticated requests to these routes are redirected to /login.
  */
-const PROTECTED_PREFIXES = ['/app']
+const PROTECTED_PREFIXES = ['/app', '/dashboard', '/settings', '/transactions']
 
 /**
  * Routes that authenticated users should NOT access (redirect to dashboard).
@@ -41,7 +41,7 @@ export async function middleware(request: NextRequest) {
       getAll() {
         return request.cookies.getAll()
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet: Array<{ name: string; value: string; options?: any }>) {
         // Forward cookies to the request (for use in server components)
         cookiesToSet.forEach(({ name, value }) =>
           request.cookies.set(name, value)
@@ -71,8 +71,8 @@ export async function middleware(request: NextRequest) {
   if (isProtectedRoute && !isAuthenticated) {
     const loginUrl = request.nextUrl.clone()
     loginUrl.pathname = '/login'
-    // Preserve the original destination for post-login redirect
-    loginUrl.searchParams.set('redirectTo', pathname)
+    // Preserve the original destination for post-login redirect (optional)
+    // loginUrl.searchParams.set('redirectTo', pathname)
     return NextResponse.redirect(loginUrl)
   }
 
@@ -81,7 +81,7 @@ export async function middleware(request: NextRequest) {
 
   if (isAuthRoute && isAuthenticated) {
     const dashboardUrl = request.nextUrl.clone()
-    dashboardUrl.pathname = '/app/dashboard'
+    dashboardUrl.pathname = '/dashboard'
     return NextResponse.redirect(dashboardUrl)
   }
 

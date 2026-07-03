@@ -55,7 +55,7 @@ function FormField({
     <div className="flex flex-col gap-1.5">
       <label
         htmlFor={id}
-        className="text-sm font-medium text-gray-700 dark:text-gray-300"
+        className="text-sm font-medium text-slate-700 dark:text-slate-300"
       >
         {label}
       </label>
@@ -70,15 +70,15 @@ function FormField({
         autoComplete={type === 'password' ? 'current-password' : 'off'}
         className={cn(
           'h-12 w-full rounded-xl border px-4',
-          'text-base text-gray-900 placeholder-gray-400',
-          'transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-          'dark:text-gray-50 dark:placeholder-gray-500',
+          'text-base text-slate-900 placeholder-slate-400',
+          'transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/10',
+          'dark:text-slate-50 dark:placeholder-slate-500',
           readOnly
-            ? 'cursor-default bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400 border-gray-200 dark:border-gray-700'
-            : 'bg-white dark:bg-gray-800',
+            ? 'cursor-default bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+            : 'bg-white dark:bg-slate-800',
           error
             ? 'border-red-500 focus:border-red-500 dark:border-red-500'
-            : 'border-gray-300 focus:border-blue-500 dark:border-gray-700 dark:focus:border-blue-400',
+            : 'border-slate-300 focus:border-slate-900 dark:border-slate-700 dark:focus:border-white',
           disabled && 'opacity-50 cursor-not-allowed',
         )}
         aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
@@ -90,7 +90,7 @@ function FormField({
         </p>
       )}
       {hint && !error && (
-        <p id={`${id}-hint`} className="text-xs text-gray-500 dark:text-gray-400">
+        <p id={`${id}-hint`} className="text-xs text-slate-500 dark:text-slate-400">
           {hint}
         </p>
       )}
@@ -138,14 +138,22 @@ export default function SettingsPage() {
     setProfileError(null)
     setProfileSuccess(false)
 
-    // Upsert driver profile (insert or update)
+    // Upsert driver profile (insert or update).
+    // `driver_profiles.id` (not user_id) is the primary key, so without an
+    // explicit onConflict target, PostgREST defaults to matching on the PK
+    // — which is never present in this payload — and every save after the
+    // first would try to INSERT again and fail on the user_id UNIQUE
+    // constraint. Target user_id explicitly to make this a true upsert.
     const { error } = await supabase
       .from('driver_profiles')
-      .upsert({
-        user_id: user.id,
-        full_name: fullName.trim() || null,
-        phone: phone.trim() || null,
-      })
+      .upsert(
+        {
+          user_id: user.id,
+          full_name: fullName.trim() || null,
+          phone: phone.trim() || null,
+        },
+        { onConflict: 'user_id' }
+      )
 
     setProfileLoading(false)
     if (error) {
@@ -189,6 +197,25 @@ export default function SettingsPage() {
     setPasswordErrors({})
     setPasswordLoading(true)
 
+    // Re-authenticate with the current password before changing it.
+    // supabase.auth.updateUser() only requires an active session — without
+    // this step, anyone who gets hold of a live session (stolen cookie,
+    // unlocked device) could silently change the password without ever
+    // knowing the original one. The "Senha atual" field was previously
+    // collected but never actually verified against anything.
+    if (user?.email) {
+      const { error: reauthError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      })
+
+      if (reauthError) {
+        setPasswordLoading(false)
+        setPasswordErrors({ currentPassword: 'Senha atual incorreta.' })
+        return
+      }
+    }
+
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
     })
@@ -214,22 +241,22 @@ export default function SettingsPage() {
     <div className="space-y-8">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">
+        <h1 className="font-display text-2xl font-bold text-slate-900 dark:text-slate-50">
           Configurações
         </h1>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Gerencie sua conta e preferências.
         </p>
       </div>
 
       {/* ── Section 1: Account / Profile ── */}
       <section
-        className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+        className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
         aria-labelledby="account-heading"
       >
         <h2
           id="account-heading"
-          className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-50"
+          className="mb-4 font-display text-base font-bold text-slate-900 dark:text-slate-50"
         >
           Conta
         </h2>
@@ -273,7 +300,7 @@ export default function SettingsPage() {
           )}
 
           {profileSuccess && (
-            <p role="status" className="text-sm text-green-600 dark:text-green-400">
+            <p role="status" className="text-sm text-emerald-700 dark:text-emerald-400">
               Perfil atualizado com sucesso!
             </p>
           )}
@@ -282,10 +309,9 @@ export default function SettingsPage() {
             type="submit"
             disabled={profileLoading}
             className={cn(
-              'flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
-              'bg-blue-600 text-base font-semibold text-white',
-              'transition-colors hover:bg-blue-700',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+              'btn-primary btn-sheen flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
+              'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white focus-visible:ring-offset-2',
               'disabled:cursor-not-allowed disabled:opacity-50',
             )}
           >
@@ -296,12 +322,12 @@ export default function SettingsPage() {
 
       {/* ── Section 2: Password ── */}
       <section
-        className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+        className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
         aria-labelledby="password-heading"
       >
         <h2
           id="password-heading"
-          className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-50"
+          className="mb-4 font-display text-base font-bold text-slate-900 dark:text-slate-50"
         >
           Alterar senha
         </h2>
@@ -315,6 +341,7 @@ export default function SettingsPage() {
             onChange={setCurrentPassword}
             placeholder="••••••••"
             disabled={passwordLoading}
+            error={passwordErrors.currentPassword}
           />
 
           <FormField
@@ -341,7 +368,7 @@ export default function SettingsPage() {
           />
 
           {passwordSuccess && (
-            <p role="status" className="text-sm text-green-600 dark:text-green-400">
+            <p role="status" className="text-sm text-emerald-700 dark:text-emerald-400">
               Senha alterada com sucesso!
             </p>
           )}
@@ -350,10 +377,9 @@ export default function SettingsPage() {
             type="submit"
             disabled={passwordLoading || !currentPassword || !newPassword || !confirmNewPassword}
             className={cn(
-              'flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
-              'bg-blue-600 text-base font-semibold text-white',
-              'transition-colors hover:bg-blue-700',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+              'btn-primary btn-sheen flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
+              'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white focus-visible:ring-offset-2',
               'disabled:cursor-not-allowed disabled:opacity-50',
             )}
           >
@@ -364,12 +390,12 @@ export default function SettingsPage() {
 
       {/* ── Section 3: Preferences ── */}
       <section
-        className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+        className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"
         aria-labelledby="preferences-heading"
       >
         <h2
           id="preferences-heading"
-          className="mb-4 text-base font-semibold text-gray-900 dark:text-gray-50"
+          className="mb-4 font-display text-base font-bold text-slate-900 dark:text-slate-50"
         >
           Preferências
         </h2>
@@ -378,10 +404,10 @@ export default function SettingsPage() {
           {/* Theme toggle */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-900 dark:text-gray-50">
+              <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
                 Tema escuro
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Alterne entre tema claro e escuro.
               </p>
             </div>
@@ -393,8 +419,8 @@ export default function SettingsPage() {
               className={cn(
                 'relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent',
                 'transition-colors duration-200 ease-in-out',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
-                resolvedTheme === 'dark' ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white focus-visible:ring-offset-2',
+                resolvedTheme === 'dark' ? 'bg-white' : 'bg-slate-900',
               )}
             >
               <span
@@ -412,7 +438,7 @@ export default function SettingsPage() {
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="language"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-slate-700 dark:text-slate-300"
             >
               Idioma
             </label>
@@ -420,18 +446,18 @@ export default function SettingsPage() {
               id="language"
               defaultValue="pt-BR"
               className={cn(
-                'h-12 w-full rounded-xl border border-gray-300 px-4',
-                'bg-white text-base text-gray-900',
-                'transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-                'dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50',
-                'dark:focus:border-blue-400',
+                'h-12 w-full rounded-xl border border-slate-300 px-4',
+                'bg-white text-base text-slate-900',
+                'transition-colors focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/10',
+                'dark:border-slate-700 dark:bg-slate-800 dark:text-slate-50',
+                'dark:focus:border-white',
               )}
               aria-describedby="language-hint"
             >
               <option value="pt-BR">Português (Brasil)</option>
               <option value="en-US">English (US)</option>
             </select>
-            <p id="language-hint" className="text-xs text-gray-500 dark:text-gray-400">
+            <p id="language-hint" className="text-xs text-slate-500 dark:text-slate-400">
               Idiomas adicionais disponíveis em breve.
             </p>
           </div>
@@ -440,16 +466,16 @@ export default function SettingsPage() {
 
       {/* ── Section 4: Danger Zone ── */}
       <section
-        className="rounded-2xl border border-red-200 bg-white p-6 dark:border-red-900 dark:bg-gray-900"
+        className="rounded-2xl border border-red-200 bg-white p-6 dark:border-red-900 dark:bg-slate-900"
         aria-labelledby="danger-heading"
       >
         <h2
           id="danger-heading"
-          className="mb-1 text-base font-semibold text-red-700 dark:text-red-400"
+          className="mb-1 font-display text-base font-bold text-red-700 dark:text-red-400"
         >
           Encerrar sessão
         </h2>
-        <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
           Você será desconectado de todos os dispositivos.
         </p>
 

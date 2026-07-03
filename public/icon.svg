@@ -1,0 +1,14 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="112" fill="#2563eb"/>
+  <!-- Upward earnings trend -->
+  <polyline points="112,352 208,272 288,320 400,176"
+    fill="none" stroke="#ffffff" stroke-width="28"
+    stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Arrow head -->
+  <polyline points="344,168 400,168 400,224"
+    fill="none" stroke="#ffffff" stroke-width="28"
+    stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- R$ mark -->
+  <text x="256" y="452" font-family="Arial, Helvetica, sans-serif"
+    font-size="88" font-weight="700" fill="#ffffff" text-anchor="middle">R$</text>
+</svg>

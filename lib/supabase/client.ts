@@ -7,11 +7,17 @@
  * Security:
  *  - Uses NEXT_PUBLIC_SUPABASE_ANON_KEY (public, limited by RLS)
  *  - RLS enforces user isolation — anon key alone cannot bypass data restrictions
- *  - Session stored in localStorage (persistent across browser reloads)
+ *  - Session stored in COOKIES (via @supabase/ssr), not localStorage. This is
+ *    required so the browser client and the server (middleware, Server
+ *    Actions, Server Components — see lib/supabase/server.ts) share the
+ *    exact same session. Using a plain localStorage client here would let
+ *    client-side signOut() clear localStorage while the server-visible
+ *    session cookie stays valid, letting a "logged out" user keep hitting
+ *    protected routes.
  *  - JWT auto-refreshed before expiry (autoRefreshToken: true)
  */
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
 
@@ -39,12 +45,8 @@ let _browserClient: SupabaseClient<Database> | null = null
 export function createClient(): SupabaseClient<Database> {
   if (_browserClient) return _browserClient
 
-  _browserClient = createSupabaseClient<Database>(supabaseUrl, supabaseAnonKey, {
+  _browserClient = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey, {
     auth: {
-      // Persist session in localStorage so users stay logged in across reloads
-      persistSession: true,
-      // Auto-refresh JWT before expiry — prevents logged-out state mid-session
-      autoRefreshToken: true,
       // Detect session from URL hash (required for email verification & password reset flows)
       detectSessionInUrl: true,
       // Use PKCE flow for more secure auth (prevents authorization code interception)
