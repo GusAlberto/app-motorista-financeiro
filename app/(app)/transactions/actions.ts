@@ -221,16 +221,13 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
       }
     }
 
-    // Soft delete by setting deleted_at timestamp
-    const { error: deleteError } = await supabase
-      .from('transactions')
-      .update({
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .is('deleted_at', null) // Only soft-delete if not already deleted
+    // Soft delete via a SECURITY DEFINER RPC. A plain UPDATE fails here:
+    // setting deleted_at moves the row out of the SELECT policy's visible set
+    // (deleted_at IS NULL), so RLS rejects it. The function bypasses RLS but
+    // enforces ownership internally (user_id = auth.uid()). See migration 008.
+    const { error: deleteError } = await supabase.rpc('soft_delete_transaction', {
+      transaction_id: id,
+    })
 
     if (deleteError) {
       console.error('Transaction delete error:', deleteError)

@@ -12,7 +12,8 @@ Passo a passo para colocar o app em produção (Vercel + Supabase).
    - `supabase/migrations/004_transactions_rls.sql`
    - `supabase/migrations/005_transactions_soft_delete.sql`
    - `supabase/migrations/006_rate_limits.sql` (rate limiting de login/signup/reset de senha)
-   - `supabase/migrations/007_fix_transactions_update_rls.sql` (corrige RLS de UPDATE — sem ela, excluir/editar falha com "new row violates row-level security policy")
+   - `supabase/migrations/007_fix_transactions_update_rls.sql` (corrige RLS de UPDATE)
+   - `supabase/migrations/008_secure_soft_delete_rpc.sql` (RPC segura de soft-delete — sem ela, excluir falha com "new row violates row-level security policy")
 3. Em **Authentication → Providers → Email**, confirme que "Email" está habilitado.
    - Para o MVP, "Confirm email" está desabilitado (`supabase/config.toml`). Para produção real, habilite e configure SMTP.
 4. Em **Project Settings → API**, copie:
