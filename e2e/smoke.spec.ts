@@ -12,6 +12,29 @@ test('home page renders the landing hero', async ({ page }) => {
   ).toBeVisible()
 })
 
+test('Content-Security-Policy header is present and does not block page scripts', async ({
+  page,
+  request,
+}) => {
+  const res = await request.get('/')
+  expect(res.headers()['content-security-policy']).toContain(`default-src 'self'`)
+
+  const cspViolations: string[] = []
+  page.on('console', (msg) => {
+    if (msg.type() === 'error' && /content security policy|csp/i.test(msg.text())) {
+      cspViolations.push(msg.text())
+    }
+  })
+
+  // Visit a public page and a form-heavy auth page — if the CSP blocked
+  // Next's hydration scripts or inline JSON-LD, this would surface here.
+  await page.goto('/')
+  await page.goto('/login')
+  await page.getByLabel('Email').fill('test@example.com')
+
+  expect(cspViolations).toEqual([])
+})
+
 test('home page "Começar agora" CTA navigates to /signup (not 404)', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: /começar agora/i }).first().click()
