@@ -44,6 +44,12 @@ test.describe('transactions CRUD (authenticated)', () => {
       !EMAIL || !PASSWORD,
       'set E2E_EMAIL and E2E_PASSWORD (a dedicated test account) to run authenticated CRUD e2e',
     )
+    // Guard against a half-configured CI (E2E creds set but Supabase still the
+    // placeholder): skip instead of failing at login against a fake project.
+    test.skip(
+      (process.env.NEXT_PUBLIC_SUPABASE_URL || '').includes('placeholder'),
+      'real NEXT_PUBLIC_SUPABASE_URL not configured — CRUD e2e needs a live Supabase',
+    )
     test.skip(
       testInfo.project.name !== 'chromium',
       'CRUD e2e runs on the desktop project only (mobile uses a different create entry point)',

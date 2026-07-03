@@ -42,13 +42,19 @@ jobs:
         run: npm run build
 
   e2e:
-    name: E2E Smoke (Playwright)
+    name: E2E Smoke + CRUD (Playwright)
     runs-on: ubuntu-latest
     needs: quality
     env:
-      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
-      SUPABASE_SERVICE_ROLE_KEY: placeholder-service-role-key
+      # Real Supabase creds (from secrets) let the authenticated CRUD test run.
+      # Falls back to placeholders when unset — then only the public smoke tests
+      # run and the CRUD test self-skips (see e2e/transactions-crud.spec.ts).
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-role-key' }}
+      # Dedicated test account for the authenticated CRUD cycle.
+      E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 

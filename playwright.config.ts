@@ -1,4 +1,10 @@
 import { defineConfig, devices } from '@playwright/test'
+import { loadEnvConfig } from '@next/env'
+
+// Load .env.local (and .env*) into process.env so tests can read secrets like
+// E2E_EMAIL / E2E_PASSWORD locally — same loader Next uses, so values match
+// the app. In CI these come from the job env instead. Reuses an existing dep.
+loadEnvConfig(process.cwd())
 
 /**
  * Playwright E2E config.
