@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { Navbar } from '@/components/Navbar'
+import { BottomNav } from '@/components/BottomNav'
 
 /**
  * app/(app)/layout.tsx
@@ -16,13 +17,16 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       {/* Sticky navbar */}
       <Navbar />
 
-      {/* Page content */}
+      {/* Page content — add bottom padding for mobile nav on small screens */}
       <main
-        className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6"
+        className="mx-auto w-full max-w-6xl px-4 py-6 pb-20 sm:pb-6 md:px-6"
         id="main-content"
       >
         {children}
       </main>
+
+      {/* Mobile bottom navigation */}
+      <BottomNav />
     </ThemeProvider>
   )
 }
