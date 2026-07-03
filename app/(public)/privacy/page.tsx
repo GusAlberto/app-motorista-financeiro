@@ -1,10 +1,12 @@
+import { APP_URL } from '@/lib/constants';
+
 export const metadata = {
   title: 'Política de Privacidade | app-motorista',
   description: 'Política de privacidade do app-motorista.',
   openGraph: {
     title: 'Política de Privacidade | app-motorista',
     description: 'Política de privacidade do app-motorista.',
-    url: 'https://app-motorista.vercel.app/privacy',
+    url: `${APP_URL}/privacy`,
     type: 'website',
   },
 };
@@ -18,13 +20,13 @@ export default function Privacy() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://app-motorista.vercel.app',
+        item: APP_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Privacidade',
-        item: 'https://app-motorista.vercel.app/privacy',
+        item: `${APP_URL}/privacy`,
       },
     ],
   };

@@ -1,10 +1,12 @@
+import { APP_URL } from '@/lib/constants';
+
 export const metadata = {
   title: 'Termos de Uso | app-motorista',
   description: 'Termos de uso do app-motorista.',
   openGraph: {
     title: 'Termos de Uso | app-motorista',
     description: 'Termos de uso do app-motorista.',
-    url: 'https://app-motorista.vercel.app/terms',
+    url: `${APP_URL}/terms`,
     type: 'website',
   },
 };
@@ -18,13 +20,13 @@ export default function Terms() {
         '@type': 'ListItem',
         position: 1,
         name: 'Home',
-        item: 'https://app-motorista.vercel.app',
+        item: APP_URL,
       },
       {
         '@type': 'ListItem',
         position: 2,
         name: 'Termos',
-        item: 'https://app-motorista.vercel.app/terms',
+        item: `${APP_URL}/terms`,
       },
     ],
   };

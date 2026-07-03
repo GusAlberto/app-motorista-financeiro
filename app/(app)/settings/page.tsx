@@ -138,14 +138,22 @@ export default function SettingsPage() {
     setProfileError(null)
     setProfileSuccess(false)
 
-    // Upsert driver profile (insert or update)
+    // Upsert driver profile (insert or update).
+    // `driver_profiles.id` (not user_id) is the primary key, so without an
+    // explicit onConflict target, PostgREST defaults to matching on the PK
+    // — which is never present in this payload — and every save after the
+    // first would try to INSERT again and fail on the user_id UNIQUE
+    // constraint. Target user_id explicitly to make this a true upsert.
     const { error } = await supabase
       .from('driver_profiles')
-      .upsert({
-        user_id: user.id,
-        full_name: fullName.trim() || null,
-        phone: phone.trim() || null,
-      })
+      .upsert(
+        {
+          user_id: user.id,
+          full_name: fullName.trim() || null,
+          phone: phone.trim() || null,
+        },
+        { onConflict: 'user_id' }
+      )
 
     setProfileLoading(false)
     if (error) {
@@ -188,6 +196,25 @@ export default function SettingsPage() {
 
     setPasswordErrors({})
     setPasswordLoading(true)
+
+    // Re-authenticate with the current password before changing it.
+    // supabase.auth.updateUser() only requires an active session — without
+    // this step, anyone who gets hold of a live session (stolen cookie,
+    // unlocked device) could silently change the password without ever
+    // knowing the original one. The "Senha atual" field was previously
+    // collected but never actually verified against anything.
+    if (user?.email) {
+      const { error: reauthError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      })
+
+      if (reauthError) {
+        setPasswordLoading(false)
+        setPasswordErrors({ currentPassword: 'Senha atual incorreta.' })
+        return
+      }
+    }
 
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
@@ -315,6 +342,7 @@ export default function SettingsPage() {
             onChange={setCurrentPassword}
             placeholder="••••••••"
             disabled={passwordLoading}
+            error={passwordErrors.currentPassword}
           />
 
           <FormField

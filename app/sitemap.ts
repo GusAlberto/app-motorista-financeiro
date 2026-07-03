@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
+import { APP_URL } from '@/lib/constants';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://app-motorista.vercel.app';
+  const baseUrl = APP_URL;
 
   return [
     {

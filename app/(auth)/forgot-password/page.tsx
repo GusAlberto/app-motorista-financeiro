@@ -5,39 +5,27 @@
  *
  * Password reset request page.
  * User enters email → Supabase sends reset link → success message shown.
+ * Submission runs server-side (forgotPasswordAction) so rate limiting
+ * applies without ever revealing whether the email is registered.
  */
 
 import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { forgotPasswordAction } from './actions'
 import { cn } from '@/lib/utils/cn'
 
 export default function ForgotPasswordPage() {
-  const supabase = createClient()
-
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setError(null)
     setLoading(true)
 
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-      email.trim(),
-      {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?type=recovery`,
-      }
-    )
+    await forgotPasswordAction(email)
 
     setLoading(false)
-
-    if (resetError) {
-      setError('Erro ao enviar o email de recuperação. Tente novamente.')
-      return
-    }
 
     // Always show success (security: don't reveal if email exists)
     setSubmitted(true)
@@ -86,15 +74,6 @@ export default function ForgotPasswordPage() {
       </p>
 
       <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-        {error && (
-          <div
-            role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
-          >
-            {error}
-          </div>
-        )}
-
         <div className="flex flex-col gap-1.5">
           <label
             htmlFor="email"

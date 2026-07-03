@@ -5,6 +5,8 @@
  *
  * Signup page — email, password, confirm password, terms checkbox.
  * Client-side validation: password strength, match, terms.
+ * Submission runs server-side (signupAction) so rate limiting applies and
+ * the account-exists state is never revealed to the caller.
  * On success: redirects to /verify-email.
  * On error: inline error display.
  */
@@ -12,7 +14,7 @@
 import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { signupAction } from './actions'
 import { cn } from '@/lib/utils/cn'
 
 function validatePassword(password: string): string | null {
@@ -25,7 +27,6 @@ function validatePassword(password: string): string | null {
 
 export default function SignupPage() {
   const router = useRouter()
-  const supabase = createClient()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -67,23 +68,12 @@ export default function SignupPage() {
     setFieldErrors({})
     setLoading(true)
 
-    const { error: authError } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-      // options: {
-      //   emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
-      // },
-    })
-    
-    if (authError) {
-      setLoading(false)      
-      if (authError.message.includes('already registered') || authError.message.includes('User already registered')) {
-        setError(
-          'Este email já está cadastrado. Tente fazer login ou recuperar sua senha.'
-        )
-      } else {
-        setError('Erro ao criar conta. Tente novamente em instantes.')
-      }
+    const result = await signupAction(email, password)
+
+    setLoading(false)
+
+    if (!result.success) {
+      setError(result.error || 'Erro ao criar conta. Tente novamente em instantes.')
       return
     }
 
