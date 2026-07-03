@@ -39,10 +39,10 @@ const COLOR_CLASSES = {
     value: 'text-red-700 dark:text-red-400',
   },
   blue: {
-    border: 'border-amber-200 dark:border-amber-900/50',
-    bg: 'bg-amber-50 dark:bg-amber-950/30',
-    icon: 'text-amber-700 dark:text-amber-400',
-    value: 'text-amber-700 dark:text-amber-400',
+    border: 'border-slate-300 dark:border-white/20',
+    bg: 'bg-slate-100 dark:bg-white/10',
+    icon: 'text-slate-900 dark:text-white',
+    value: 'text-slate-900 dark:text-white',
   },
   neutral: {
     border: 'border-slate-200 dark:border-slate-800',

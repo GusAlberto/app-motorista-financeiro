@@ -102,7 +102,7 @@ export function TransactionItem({
         <div className={`flex items-center gap-1 transition-opacity sm:opacity-0 ${showActions ? 'sm:opacity-100' : ''}`}>
           <button
             onClick={() => onEdit?.(transaction)}
-            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-amber-500/10 hover:text-amber-700 dark:text-slate-400 dark:hover:text-amber-400"
+            className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
             aria-label={`Editar transação: ${formatCategory(transaction.category)}`}
           >
             <Pencil className="h-4 w-4" aria-hidden="true" />

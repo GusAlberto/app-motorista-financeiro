@@ -51,7 +51,7 @@ async function DashboardContent({ period }: { period: PeriodType }) {
         </div>
         <Link
           href="/transactions"
-          className="flex h-11 items-center gap-2 rounded-xl bg-amber-500 px-4 font-semibold text-slate-950 shadow-sm transition-colors hover:bg-amber-400"
+          className="btn-primary btn-sheen flex h-11 items-center gap-2 rounded-xl px-4 font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30"
         >
           <Plus className="h-5 w-5" aria-hidden="true" />
           <span>Nova Transação</span>
@@ -97,7 +97,7 @@ async function DashboardContent({ period }: { period: PeriodType }) {
           </p>
           <Link
             href="/transactions"
-            className="mt-1 text-sm font-semibold text-amber-700 hover:underline dark:text-amber-400"
+            className="mt-1 text-sm font-semibold text-slate-900 hover:underline dark:text-white"
           >
             Registrar primeira transação →
           </Link>

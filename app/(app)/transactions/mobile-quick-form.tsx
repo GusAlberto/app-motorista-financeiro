@@ -48,7 +48,7 @@ export function MobileQuickForm() {
         <div className="fixed bottom-24 right-4 z-40 sm:hidden">
           <button
             onClick={() => setShowForm(true)}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/30 transition-transform active:scale-95"
+            className="btn-primary btn-sheen flex h-14 w-14 items-center justify-center rounded-full shadow-lg shadow-slate-900/30 transition-transform active:scale-95 dark:shadow-black/40"
             aria-label="Nova transação"
           >
             <Plus className="h-6 w-6" aria-hidden="true" />

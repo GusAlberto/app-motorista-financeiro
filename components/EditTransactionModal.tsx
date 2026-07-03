@@ -113,7 +113,7 @@ export function EditTransactionModal({
               step="0.01"
               min="0.01"
               autoFocus
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 text-slate-900 dark:text-white"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white text-slate-900 dark:text-white"
             />
             {errors.amount && (
               <p className="text-xs text-red-600 dark:text-red-400">{errors.amount}</p>
@@ -129,7 +129,7 @@ export function EditTransactionModal({
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 text-slate-900 dark:text-white"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white text-slate-900 dark:text-white"
             >
               {categories.map((cat) => (
                 <option key={cat.value} value={cat.value}>
@@ -152,7 +152,7 @@ export function EditTransactionModal({
               type="date"
               value={transactionDate}
               onChange={(e) => setTransactionDate(e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 text-slate-900 dark:text-white"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white text-slate-900 dark:text-white"
             />
             {errors.transactionDate && (
               <p className="text-xs text-red-600 dark:text-red-400">{errors.transactionDate}</p>
@@ -170,7 +170,7 @@ export function EditTransactionModal({
               onChange={(e) => setDescription(e.target.value)}
               maxLength={500}
               rows={2}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 text-slate-900 dark:text-white resize-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white text-slate-900 dark:text-white resize-none"
             />
             <p className="text-xs text-slate-500 dark:text-slate-400">{description.length}/500</p>
           </div>
@@ -188,18 +188,18 @@ export function EditTransactionModal({
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold rounded-xl transition-colors disabled:opacity-50"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="flex-1 px-4 py-2 bg-amber-500 hover:bg-amber-400 disabled:bg-amber-300 text-slate-950 font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+              className="btn-primary btn-sheen flex-1 px-4 py-2 font-semibold rounded-xl transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isSaving ? (
                 <>
-                  <span className="inline-block w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                  <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span>
                   Salvando...
                 </>
               ) : (

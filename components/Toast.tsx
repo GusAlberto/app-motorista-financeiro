@@ -45,9 +45,9 @@ export function Toast({
       icon: <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" aria-hidden="true" />,
     },
     info: {
-      bg: 'bg-amber-50 dark:bg-amber-900',
-      border: 'border-amber-200 dark:border-amber-700',
-      icon: <AlertCircle className="w-5 h-5 text-amber-700 dark:text-amber-400" aria-hidden="true" />,
+      bg: 'bg-slate-100 dark:bg-slate-800',
+      border: 'border-slate-300 dark:border-slate-700',
+      icon: <AlertCircle className="w-5 h-5 text-slate-700 dark:text-slate-300" aria-hidden="true" />,
     },
   }
 
@@ -65,7 +65,7 @@ export function Toast({
             ? 'text-emerald-700 dark:text-emerald-200'
             : type === 'error'
             ? 'text-red-700 dark:text-red-200'
-            : 'text-amber-700 dark:text-amber-200'
+            : 'text-slate-700 dark:text-slate-200'
         }`}
       >
         {message}

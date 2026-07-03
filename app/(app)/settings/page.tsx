@@ -71,14 +71,14 @@ function FormField({
         className={cn(
           'h-12 w-full rounded-xl border px-4',
           'text-base text-slate-900 placeholder-slate-400',
-          'transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500/20',
+          'transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/10',
           'dark:text-slate-50 dark:placeholder-slate-500',
           readOnly
             ? 'cursor-default bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 border-slate-200 dark:border-slate-700'
             : 'bg-white dark:bg-slate-800',
           error
             ? 'border-red-500 focus:border-red-500 dark:border-red-500'
-            : 'border-slate-300 focus:border-amber-500 dark:border-slate-700 dark:focus:border-amber-400',
+            : 'border-slate-300 focus:border-slate-900 dark:border-slate-700 dark:focus:border-white',
           disabled && 'opacity-50 cursor-not-allowed',
         )}
         aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
@@ -309,10 +309,9 @@ export default function SettingsPage() {
             type="submit"
             disabled={profileLoading}
             className={cn(
-              'flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
-              'bg-amber-500 text-base font-semibold text-slate-950',
-              'transition-colors hover:bg-amber-400',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
+              'btn-primary btn-sheen flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
+              'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white focus-visible:ring-offset-2',
               'disabled:cursor-not-allowed disabled:opacity-50',
             )}
           >
@@ -378,10 +377,9 @@ export default function SettingsPage() {
             type="submit"
             disabled={passwordLoading || !currentPassword || !newPassword || !confirmNewPassword}
             className={cn(
-              'flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
-              'bg-amber-500 text-base font-semibold text-slate-950',
-              'transition-colors hover:bg-amber-400',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
+              'btn-primary btn-sheen flex h-12 w-full items-center justify-center rounded-xl md:w-auto md:px-6',
+              'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white focus-visible:ring-offset-2',
               'disabled:cursor-not-allowed disabled:opacity-50',
             )}
           >
@@ -421,8 +419,8 @@ export default function SettingsPage() {
               className={cn(
                 'relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent',
                 'transition-colors duration-200 ease-in-out',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
-                resolvedTheme === 'dark' ? 'bg-amber-500' : 'bg-slate-300 dark:bg-slate-600',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white focus-visible:ring-offset-2',
+                resolvedTheme === 'dark' ? 'bg-white' : 'bg-slate-900',
               )}
             >
               <span
@@ -450,9 +448,9 @@ export default function SettingsPage() {
               className={cn(
                 'h-12 w-full rounded-xl border border-slate-300 px-4',
                 'bg-white text-base text-slate-900',
-                'transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20',
+                'transition-colors focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/10',
                 'dark:border-slate-700 dark:bg-slate-800 dark:text-slate-50',
-                'dark:focus:border-amber-400',
+                'dark:focus:border-white',
               )}
               aria-describedby="language-hint"
             >

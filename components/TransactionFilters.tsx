@@ -26,7 +26,7 @@ const TYPE_LABELS: Record<string, string> = {
 }
 
 const selectClasses =
-  'px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 text-slate-900 dark:text-white disabled:opacity-50 text-sm font-medium'
+  'px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-white text-slate-900 dark:text-white disabled:opacity-50 text-sm font-medium'
 
 export function TransactionFilters({
   defaultPeriod = 'month',
@@ -108,7 +108,7 @@ export function TransactionFilters({
           placeholder="Buscar por descrição ou categoria..."
           value={search}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:ring-amber-400"
+          className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:ring-white/10"
         />
       </div>
 
