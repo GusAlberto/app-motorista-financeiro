@@ -43,6 +43,7 @@ cp .env.example .env.local
 #   supabase/migrations/004_transactions_rls.sql
 #   supabase/migrations/005_transactions_soft_delete.sql
 #   supabase/migrations/006_rate_limits.sql
+#   supabase/migrations/007_fix_transactions_update_rls.sql
 
 # Iniciar servidor de desenvolvimento
 npm run dev
