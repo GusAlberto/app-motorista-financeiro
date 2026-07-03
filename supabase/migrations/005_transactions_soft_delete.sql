@@ -28,11 +28,22 @@ WHERE deleted_at IS NULL;
 -- UPDATE RLS POLICIES
 -- =============================================================================
 
--- Drop existing policies (if they exist) to prevent conflicts
-DROP POLICY IF EXISTS "Users can view their own transactions" ON public.transactions;
-DROP POLICY IF EXISTS "Users can create transactions" ON public.transactions;
+-- Drop existing policies (if they exist) to prevent conflicts.
+-- Names must match exactly what 004_transactions_rls.sql created — a
+-- previous version of this file had "view"/"create" instead of the
+-- actual names "read"/"insert", so those two DROPs were silent no-ops:
+-- 004's original SELECT/INSERT policies (which don't filter out
+-- soft-deleted rows) stayed active alongside the new ones below,
+-- letting soft-deleted transactions still be readable via the old policy.
+DROP POLICY IF EXISTS "Users can read their own transactions" ON public.transactions;
+DROP POLICY IF EXISTS "Users can insert their own transactions" ON public.transactions;
 DROP POLICY IF EXISTS "Users can update their own transactions" ON public.transactions;
 DROP POLICY IF EXISTS "Users can delete their own transactions" ON public.transactions;
+-- Also drop this migration's own policy names, so re-running it (e.g. a
+-- CI/preview database that already applied it once) is idempotent too.
+DROP POLICY IF EXISTS "Users can view their own active transactions" ON public.transactions;
+DROP POLICY IF EXISTS "Users can create transactions" ON public.transactions;
+DROP POLICY IF EXISTS "Users can update their own active transactions" ON public.transactions;
 
 -- Enable RLS if not already enabled
 ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
