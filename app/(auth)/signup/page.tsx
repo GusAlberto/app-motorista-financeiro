@@ -28,7 +28,7 @@ function validatePassword(password: string): string | null {
 const inputBase = cn(
   'h-12 w-full rounded-xl border px-4',
   'bg-white text-base text-slate-900 placeholder-slate-400',
-  'transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500/20',
+  'transition-colors focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/10',
   'dark:bg-slate-900 dark:text-slate-50 dark:placeholder-slate-500',
 )
 
@@ -37,7 +37,7 @@ function inputClasses(hasError: boolean) {
     inputBase,
     hasError
       ? 'border-red-500 focus:border-red-500 dark:border-red-500'
-      : 'border-slate-300 focus:border-amber-500 dark:border-slate-700 dark:focus:border-amber-400',
+      : 'border-slate-300 focus:border-slate-900 dark:border-slate-700 dark:focus:border-white',
   )
 }
 
@@ -206,8 +206,8 @@ export default function SignupPage() {
               checked={agreedToTerms}
               onChange={(e) => setAgreedToTerms(e.target.checked)}
               className={cn(
-                'mt-0.5 h-5 w-5 flex-shrink-0 rounded border-slate-300 text-amber-500',
-                'focus:ring-2 focus:ring-amber-500 focus:ring-offset-2',
+                'mt-0.5 h-5 w-5 flex-shrink-0 rounded border-slate-300 text-slate-900 dark:text-white',
+                'focus:ring-2 focus:ring-slate-900 dark:focus:ring-white focus:ring-offset-2',
                 'dark:border-slate-600',
               )}
               disabled={loading}
@@ -217,7 +217,7 @@ export default function SignupPage() {
               <Link
                 href="/terms"
                 target="_blank"
-                className="font-medium text-amber-700 hover:underline dark:text-amber-400"
+                className="font-medium text-slate-900 hover:underline dark:text-white"
               >
                 Termos de Uso
               </Link>{' '}
@@ -225,7 +225,7 @@ export default function SignupPage() {
               <Link
                 href="/privacy"
                 target="_blank"
-                className="font-medium text-amber-700 hover:underline dark:text-amber-400"
+                className="font-medium text-slate-900 hover:underline dark:text-white"
               >
                 Política de Privacidade
               </Link>
@@ -243,10 +243,8 @@ export default function SignupPage() {
           type="submit"
           disabled={loading}
           className={cn(
-            'mt-2 flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-amber-500 text-base font-semibold text-slate-950',
-            'transition-colors hover:bg-amber-400 active:bg-amber-600',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
+            'btn-primary btn-sheen mt-2 flex h-12 w-full items-center justify-center rounded-xl',
+            'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
             'disabled:cursor-not-allowed disabled:opacity-50',
           )}
         >
@@ -258,7 +256,7 @@ export default function SignupPage() {
         Já tem uma conta?{' '}
         <Link
           href="/login"
-          className="font-medium text-amber-700 hover:underline dark:text-amber-400"
+          className="font-medium text-slate-900 hover:underline dark:text-white"
         >
           Entrar
         </Link>

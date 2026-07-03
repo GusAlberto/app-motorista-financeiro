@@ -14,12 +14,12 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-slate-50 px-4 py-8 dark:bg-slate-950">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-amber-400/20 blur-[100px] dark:bg-amber-500/10"
+          className="pointer-events-none absolute -top-32 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-slate-400/20 blur-[100px] dark:bg-white/[0.06]"
         />
 
         {/* App identity header */}
         <Link href="/" className="relative mb-8 flex flex-col items-center text-center">
-          <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500 text-slate-950">
+          <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-b from-slate-700 to-slate-950 text-white ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5">
             <Wallet className="h-5 w-5" aria-hidden="true" />
           </span>
           <h1 className="font-display text-2xl font-bold text-slate-900 dark:text-white">

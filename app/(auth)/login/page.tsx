@@ -19,9 +19,9 @@ import { cn } from '@/lib/utils/cn'
 const inputClasses = cn(
   'h-12 w-full rounded-xl border border-slate-300 px-4',
   'bg-white text-base text-slate-900 placeholder-slate-400',
-  'transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20',
+  'transition-colors focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10',
   'dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder-slate-500',
-  'dark:focus:border-amber-400',
+  'dark:focus:border-white dark:focus:ring-white/10',
 )
 
 export default function LoginPage() {
@@ -107,7 +107,7 @@ export default function LoginPage() {
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm font-medium text-amber-700 hover:underline dark:text-amber-400"
+              className="text-sm font-medium text-slate-900 hover:underline dark:text-white"
             >
               Esqueceu a senha?
             </Link>
@@ -130,10 +130,8 @@ export default function LoginPage() {
           type="submit"
           disabled={loading || !email || !password}
           className={cn(
-            'mt-2 flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-amber-500 text-base font-semibold text-slate-950',
-            'transition-colors hover:bg-amber-400 active:bg-amber-600',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
+            'btn-primary btn-sheen mt-2 flex h-12 w-full items-center justify-center rounded-xl',
+            'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
             'disabled:cursor-not-allowed disabled:opacity-50',
           )}
         >
@@ -146,7 +144,7 @@ export default function LoginPage() {
         Não tem uma conta?{' '}
         <Link
           href="/signup"
-          className="font-medium text-amber-700 hover:underline dark:text-amber-400"
+          className="font-medium text-slate-900 hover:underline dark:text-white"
         >
           Criar conta gratuita
         </Link>

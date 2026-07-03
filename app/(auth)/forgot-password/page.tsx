@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div
-          className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+          className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-b from-slate-700 to-slate-950 text-white ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5"
           aria-hidden="true"
         >
           <CheckCircle2 className="h-6 w-6" />
@@ -51,10 +51,8 @@ export default function ForgotPasswordPage() {
         <Link
           href="/login"
           className={cn(
-            'flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-amber-500 text-base font-semibold text-slate-950',
-            'transition-colors hover:bg-amber-400',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
+            'btn-primary btn-sheen flex h-12 w-full items-center justify-center rounded-xl',
+            'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
           )}
         >
           Voltar ao login
@@ -91,9 +89,9 @@ export default function ForgotPasswordPage() {
             className={cn(
               'h-12 w-full rounded-xl border border-slate-300 px-4',
               'bg-white text-base text-slate-900 placeholder-slate-400',
-              'transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20',
+              'transition-colors focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10',
               'dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder-slate-500',
-              'dark:focus:border-amber-400',
+              'dark:focus:border-white dark:focus:ring-white/10',
             )}
             disabled={loading}
           />
@@ -103,10 +101,8 @@ export default function ForgotPasswordPage() {
           type="submit"
           disabled={loading || !email}
           className={cn(
-            'flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-amber-500 text-base font-semibold text-slate-950',
-            'transition-colors hover:bg-amber-400 active:bg-amber-600',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
+            'btn-primary btn-sheen flex h-12 w-full items-center justify-center rounded-xl',
+            'text-base font-semibold shadow-md shadow-slate-900/10 transition-shadow dark:shadow-black/30',
             'disabled:cursor-not-allowed disabled:opacity-50',
           )}
         >
@@ -118,7 +114,7 @@ export default function ForgotPasswordPage() {
         Lembrou a senha?{' '}
         <Link
           href="/login"
-          className="font-medium text-amber-700 hover:underline dark:text-amber-400"
+          className="font-medium text-slate-900 hover:underline dark:text-white"
         >
           Entrar
         </Link>

@@ -18,7 +18,7 @@ export default function VerifyEmailPage() {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <div
-        className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400"
+        className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-white/10 dark:text-white"
         aria-hidden="true"
       >
         <Mail className="h-8 w-8" strokeWidth={1.5} />
@@ -38,7 +38,7 @@ export default function VerifyEmailPage() {
       {/* Back to login */}
       <Link
         href="/login"
-        className="flex h-12 w-full items-center justify-center rounded-xl border border-slate-300 bg-white text-base font-semibold text-slate-900 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-700"
+        className="flex h-12 w-full items-center justify-center rounded-xl border border-slate-300 bg-white text-base font-semibold text-slate-900 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-700"
       >
         Voltar ao login
       </Link>
@@ -48,7 +48,7 @@ export default function VerifyEmailPage() {
         Não recebeu o email?{' '}
         <Link
           href="/signup"
-          className="font-medium text-amber-700 hover:underline dark:text-amber-400"
+          className="font-medium text-slate-900 hover:underline dark:text-white"
         >
           Tente cadastrar novamente
         </Link>
