@@ -58,7 +58,7 @@ export default function HowItWorks() {
             {STEPS.map((item, i) => (
               <div key={item.step} className="relative flex gap-6">
                 <div className="flex flex-col items-center">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-amber-500 font-display text-lg font-bold text-slate-950">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-slate-700 to-slate-950 font-display text-lg font-bold text-white ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5">
                     {item.step}
                   </div>
                   {i < STEPS.length - 1 && (

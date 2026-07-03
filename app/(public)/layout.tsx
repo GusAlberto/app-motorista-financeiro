@@ -12,33 +12,39 @@ export default function PublicLayout({
       <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-lg dark:border-slate-800 dark:bg-slate-950/80">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold text-slate-900 dark:text-white">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500 text-slate-950">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-b from-slate-700 to-slate-950 text-white shadow-sm ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5">
               <Wallet className="h-4 w-4" aria-hidden="true" />
             </span>
             app-motorista
           </Link>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/how-it-works"
-              className="hidden text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 sm:block dark:text-slate-400 dark:hover:text-white"
-            >
-              Como funciona
-            </Link>
-            <Link
-              href="/faq"
-              className="hidden text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 sm:block dark:text-slate-400 dark:hover:text-white"
-            >
-              FAQ
-            </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Secondary links — a brushed-metal capsule instead of bare
+                text, riffing on the black/silver language of premium
+                mobility apps without reusing any real brand assets. */}
+            <div className="hidden items-center gap-0.5 rounded-full bg-gradient-to-b from-slate-800 to-slate-950 p-1 shadow-inner sm:flex dark:bg-white/10 dark:from-transparent dark:to-transparent dark:shadow-none dark:ring-1 dark:ring-white/10">
+              <Link
+                href="/how-it-works"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                Como funciona
+              </Link>
+              <Link
+                href="/faq"
+                className="rounded-full px-4 py-2 text-sm font-semibold text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                FAQ
+              </Link>
+            </div>
+
             <Link
               href="/login"
-              className="text-sm font-medium text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              className="inline-flex h-9 items-center justify-center rounded-full border-2 border-slate-900 px-4 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-900 hover:text-white dark:border-white/70 dark:text-white dark:hover:bg-white dark:hover:text-slate-950"
             >
               Login
             </Link>
             <Link
               href="/signup"
-              className="inline-flex h-9 items-center justify-center rounded-lg bg-amber-500 px-4 text-sm font-semibold text-slate-950 transition-colors hover:bg-amber-400"
+              className="btn-primary btn-sheen inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-bold shadow-md shadow-slate-900/20 transition-shadow hover:shadow-lg dark:shadow-black/40"
             >
               Criar conta
             </Link>
@@ -57,7 +63,7 @@ export default function PublicLayout({
           <div className="mb-8 grid gap-8 sm:grid-cols-4">
             <div className="sm:col-span-1">
               <Link href="/" className="flex items-center gap-2 font-display text-base font-bold text-slate-900 dark:text-white">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500 text-slate-950">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-b from-slate-700 to-slate-950 text-white ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5">
                   <Wallet className="h-4 w-4" aria-hidden="true" />
                 </span>
                 app-motorista
