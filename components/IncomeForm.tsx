@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { INCOME_CATEGORIES } from '@/lib/validation/transaction'
+import { getLocalDateString } from '@/lib/utils/date'
 
 interface IncomeFormData {
   type: 'income'
@@ -40,7 +41,7 @@ function SubmitButton() {
 }
 
 export function IncomeForm({ onSuccess, onError, isPending: externalPending }: IncomeFormProps) {
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
+  const [date, setDate] = useState<string>(getLocalDateString())
   const [category, setCategory] = useState<string>('ride')
   const [amount, setAmount] = useState<string>('')
   const [description, setDescription] = useState<string>('')
@@ -76,7 +77,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
       }
 
       // Check if date is in the future using date string comparison
-      const todayStr = new Date().toISOString().split('T')[0]
+      const todayStr = getLocalDateString()
       if (date > todayStr) {
         newErrors.transaction_date = 'A data não pode ser no futuro'
       }
@@ -95,7 +96,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
       // Reset form
       setAmount('')
       setDescription('')
-      setDate(new Date().toISOString().split('T')[0])
+      setDate(getLocalDateString())
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Falha ao registrar ganho'
       setErrors({ submit: message })
