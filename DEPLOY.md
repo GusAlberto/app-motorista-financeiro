@@ -11,6 +11,7 @@ Passo a passo para colocar o app em produção (Vercel + Supabase).
    - `supabase/migrations/003_transactions_table.sql`
    - `supabase/migrations/004_transactions_rls.sql`
    - `supabase/migrations/005_transactions_soft_delete.sql`
+   - `supabase/migrations/006_rate_limits.sql` (rate limiting de login/signup/reset de senha)
 3. Em **Authentication → Providers → Email**, confirme que "Email" está habilitado.
    - Para o MVP, "Confirm email" está desabilitado (`supabase/config.toml`). Para produção real, habilite e configure SMTP.
 4. Em **Project Settings → API**, copie:
@@ -22,20 +23,21 @@ Passo a passo para colocar o app em produção (Vercel + Supabase).
 
 1. Importe o repositório em [vercel.com/new](https://vercel.com/new)
 2. A Vercel detecta Next.js automaticamente (framework preset).
-3. Em **Environment Variables**, adicione as 3 chaves do passo 1.4:
+3. Em **Environment Variables**, adicione:
    | Nome | Valor |
    |------|-------|
    | `NEXT_PUBLIC_SUPABASE_URL` | (Project URL) |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | (anon key) |
    | `SUPABASE_SERVICE_ROLE_KEY` | (service role key) |
+   | `NEXT_PUBLIC_APP_URL` | URL de produção real (ex.: `https://motorista.dev`) — usada em metadata/SEO/sitemap/robots.txt e nos redirects de email |
 4. Clique em **Deploy**.
-5. Após o deploy, copie a URL de produção (ex.: `https://app-motorista.vercel.app`).
+5. Após o deploy, confirme a URL de produção (ex.: `https://motorista.dev`).
 
 ## 3. Configuração pós-deploy
 
-1. No Supabase, em **Authentication → URL Configuration**, adicione a URL da Vercel em:
-   - **Site URL**: `https://sua-url.vercel.app`
-   - **Redirect URLs**: `https://sua-url.vercel.app/auth/callback`
+1. No Supabase, em **Authentication → URL Configuration**, adicione a URL de produção em:
+   - **Site URL**: `https://sua-url.com`
+   - **Redirect URLs**: `https://sua-url.com/auth/callback`
 2. Se usar domínio próprio, repita com o domínio final.
 
 ## 4. CI/CD
@@ -56,6 +58,9 @@ A Vercel faz deploy automático a cada push na branch `main`.
 - [ ] App é instalável (ícone "Instalar" no navegador mobile)
 - [ ] Funciona offline (página `/offline.html` como fallback)
 - [ ] Lighthouse: PWA installable, Performance > 85, SEO > 90
+- [ ] Email de confirmação/reset de senha redireciona corretamente (`/auth/callback` → `/dashboard` ou `/settings`)
+- [ ] Trocar a senha em Configurações pede a senha atual corretamente
+- [ ] Após 5 tentativas de login erradas para o mesmo email em 15 min, a próxima tentativa é bloqueada com "Muitas tentativas..."
 
 ## Comandos úteis
 
