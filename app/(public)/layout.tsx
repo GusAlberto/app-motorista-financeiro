@@ -43,10 +43,8 @@ export default function PublicLayout({
           adaptive. Chrome stays constant premium-black regardless of the
           page's light/dark toggle, echoing the always-dark floating pill
           from the reference (clean solid surface, pill CTAs) without
-          reusing any of its actual assets. The center links are absolutely
-          centered so they sit at the pill's true midpoint rather than
-          drifting with the unequal widths of the logo and the right
-          cluster (which justify-between alone would cause). */}
+          reusing any of its actual assets. Logo on the left, auth actions
+          on the right — no center nav links. */}
       <div className="sticky top-4 z-50 hidden px-4 md:block">
         <nav className="relative mx-auto flex h-16 max-w-4xl items-center justify-between rounded-full border border-white/10 bg-slate-950 px-4 shadow-2xl shadow-black/40">
           <Link href="/" className="relative z-10 flex items-center gap-2.5">
@@ -55,15 +53,6 @@ export default function PublicLayout({
             </span>
             <span className="font-display text-base font-bold tracking-tight text-white">app-motorista</span>
           </Link>
-
-          <div className="absolute left-1/2 top-1/2 z-0 flex -translate-x-1/2 -translate-y-1/2 items-center gap-8">
-            <Link href="/how-it-works" className="text-sm font-medium text-white/60 transition-colors hover:text-white">
-              Como funciona
-            </Link>
-            <Link href="/faq" className="text-sm font-medium text-white/60 transition-colors hover:text-white">
-              FAQ
-            </Link>
-          </div>
 
           <div className="relative z-10 flex items-center gap-2">
             <ThemeToggle className="text-white/70 hover:bg-white/10 hover:text-white focus-visible:ring-white" />

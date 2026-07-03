@@ -27,9 +27,15 @@ export interface InteractiveMenuItem {
 interface InteractiveMenuProps {
   items: InteractiveMenuItem[]
   className?: string
+  /**
+   * Optional non-route action rendered at the row's midpoint (e.g. the
+   * raised "+" quick-add button). It splits the tabs evenly around it so
+   * it reads as the row's visual anchor rather than just another tab.
+   */
+  centerAction?: React.ReactNode
 }
 
-export function InteractiveMenu({ items, className }: InteractiveMenuProps) {
+export function InteractiveMenu({ items, className, centerAction }: InteractiveMenuProps) {
   const pathname = usePathname()
 
   const activeIndex = useMemo(() => {
@@ -39,28 +45,33 @@ export function InteractiveMenu({ items, className }: InteractiveMenuProps) {
     return index === -1 ? 0 : index
   }, [items, pathname])
 
+  const splitAt = centerAction ? Math.ceil(items.length / 2) : items.length
+
+  const renderTab = (item: InteractiveMenuItem, index: number) => {
+    const isActive = index === activeIndex
+    const Icon = item.icon
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        aria-current={isActive ? 'page' : undefined}
+        className={cn('menu__item', isActive && 'active')}
+      >
+        <span className="menu__icon">
+          <Icon className="icon" aria-hidden="true" />
+        </span>
+        <strong className={cn('menu__text', isActive && 'active')}>
+          {item.label}
+        </strong>
+      </Link>
+    )
+  }
+
   return (
     <div className={cn('menu', className)}>
-      {items.map((item, index) => {
-        const isActive = index === activeIndex
-        const Icon = item.icon
-
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            aria-current={isActive ? 'page' : undefined}
-            className={cn('menu__item', isActive && 'active')}
-          >
-            <span className="menu__icon">
-              <Icon className="icon" aria-hidden="true" />
-            </span>
-            <strong className={cn('menu__text', isActive && 'active')}>
-              {item.label}
-            </strong>
-          </Link>
-        )
-      })}
+      {items.slice(0, splitAt).map((item, i) => renderTab(item, i))}
+      {centerAction}
+      {items.slice(splitAt).map((item, i) => renderTab(item, i + splitAt))}
     </div>
   )
 }
