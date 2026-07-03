@@ -46,7 +46,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="/auth/signup"
+              href="/signup"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
             >
               Começar agora <ArrowRight className="w-4 h-4" />
@@ -110,7 +110,7 @@ export default function Home() {
             Registre-se agora e comece a acompanhar suas finanças em tempo real.
           </p>
           <Link
-            href="/auth/signup"
+            href="/signup"
             className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
           >
             Criar conta grátis <ArrowRight className="w-4 h-4" />
