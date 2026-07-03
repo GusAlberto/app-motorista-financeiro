@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, TrendingUp, TrendingDown } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, X } from 'lucide-react'
 import { IncomeForm } from '@/components/IncomeForm'
 import { ExpenseForm } from '@/components/ExpenseForm'
 import { useTransactionForm } from '@/lib/hooks/useTransactionForm'
@@ -19,7 +19,7 @@ export function MobileQuickForm() {
     message: string
   } | null>(null)
 
-  const { state, handleCreateTransaction, clearError } = useTransactionForm()
+  const { state, handleCreateTransaction } = useTransactionForm()
 
   const handleFormSuccess = async (transaction: any) => {
     try {
@@ -38,35 +38,33 @@ export function MobileQuickForm() {
   }
 
   const handleFormError = (error: string) => {
-    setToast({
-      type: 'error',
-      message: error,
-    })
+    setToast({ type: 'error', message: error })
   }
 
   if (!showForm) {
     return (
       <>
-        {/* Quick action button */}
-        <div className="fixed bottom-6 right-6 z-40 sm:hidden">
+        {/* Quick action button (mobile) — sits above the fixed BottomNav */}
+        <div className="fixed bottom-24 right-4 z-40 sm:hidden">
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg active:shadow-md transition-shadow"
+            className="btn-primary btn-sheen flex h-14 w-14 items-center justify-center rounded-full shadow-lg shadow-slate-900/30 transition-transform active:scale-95 dark:shadow-black/40"
+            aria-label="Nova transação"
           >
-            <Plus className="w-6 h-6" />
+            <Plus className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
 
-        {/* Desktop button */}
-        <div className="hidden sm:flex gap-2 mb-6">
+        {/* Desktop buttons */}
+        <div className="hidden gap-3 sm:flex">
           <button
             onClick={() => {
               setActiveTab('income')
               setShowForm(true)
             }}
-            className="flex items-center gap-2 flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors h-12"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-600 font-semibold text-white transition-colors hover:bg-emerald-700"
           >
-            <TrendingUp className="w-5 h-5" />
+            <TrendingUp className="h-5 w-5" aria-hidden="true" />
             Registrar Ganho
           </button>
           <button
@@ -74,21 +72,16 @@ export function MobileQuickForm() {
               setActiveTab('expense')
               setShowForm(true)
             }}
-            className="flex items-center gap-2 flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors h-12"
+            className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-red-600 font-semibold text-white transition-colors hover:bg-red-700"
           >
-            <TrendingDown className="w-5 h-5" />
+            <TrendingDown className="h-5 w-5" aria-hidden="true" />
             Registrar Despesa
           </button>
         </div>
 
-        {/* Toast notifications */}
         {toast && (
           <ToastContainer>
-            <Toast
-              type={toast.type}
-              message={toast.message}
-              onClose={() => setToast(null)}
-            />
+            <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />
           </ToastContainer>
         )}
       </>
@@ -99,37 +92,38 @@ export function MobileQuickForm() {
     <>
       {/* Modal Overlay */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-50"
+        className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm"
         onClick={() => setShowForm(false)}
-      ></div>
+      />
 
       {/* Modal Content */}
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
+      <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
         <div
-          className="bg-white dark:bg-gray-800 rounded-t-2xl sm:rounded-lg w-full sm:w-full sm:max-w-md max-h-[90vh] overflow-y-auto"
+          className="max-h-[90vh] w-full overflow-y-auto rounded-t-2xl bg-white sm:max-w-md sm:rounded-2xl dark:bg-slate-900"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <div className="sticky top-0 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 dark:border-slate-800 dark:bg-slate-900">
+            <h2 className="font-display text-xl font-bold text-slate-900 dark:text-white">
               {activeTab === 'income' ? 'Registrar Ganho' : 'Registrar Despesa'}
             </h2>
             <button
               onClick={() => setShowForm(false)}
-              className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-2xl leading-none"
+              className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              aria-label="Fechar"
             >
-              ×
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
 
           {/* Tabs for mobile */}
-          <div className="sm:hidden flex border-b border-gray-200 dark:border-gray-700">
+          <div className="flex border-b border-slate-200 sm:hidden dark:border-slate-800">
             <button
               onClick={() => setActiveTab('income')}
               className={`flex-1 py-3 font-semibold transition-colors ${
                 activeTab === 'income'
-                  ? 'text-green-600 dark:text-green-400 border-b-2 border-green-600 dark:border-green-400'
-                  : 'text-gray-600 dark:text-gray-400'
+                  ? 'border-b-2 border-emerald-600 text-emerald-700 dark:border-emerald-400 dark:text-emerald-400'
+                  : 'text-slate-500 dark:text-slate-400'
               }`}
             >
               Ganho
@@ -138,8 +132,8 @@ export function MobileQuickForm() {
               onClick={() => setActiveTab('expense')}
               className={`flex-1 py-3 font-semibold transition-colors ${
                 activeTab === 'expense'
-                  ? 'text-red-600 dark:text-red-400 border-b-2 border-red-600 dark:border-red-400'
-                  : 'text-gray-600 dark:text-gray-400'
+                  ? 'border-b-2 border-red-600 text-red-700 dark:border-red-400 dark:text-red-400'
+                  : 'text-slate-500 dark:text-slate-400'
               }`}
             >
               Despesa
@@ -149,25 +143,17 @@ export function MobileQuickForm() {
           {/* Form Content */}
           <div className="p-6">
             {activeTab === 'income' ? (
-              <IncomeForm
-                onSuccess={handleFormSuccess}
-                onError={handleFormError}
-                isPending={state.isLoading}
-              />
+              <IncomeForm onSuccess={handleFormSuccess} onError={handleFormError} isPending={state.isLoading} />
             ) : (
-              <ExpenseForm
-                onSuccess={handleFormSuccess}
-                onError={handleFormError}
-                isPending={state.isLoading}
-              />
+              <ExpenseForm onSuccess={handleFormSuccess} onError={handleFormError} isPending={state.isLoading} />
             )}
           </div>
 
           {/* Close button for mobile */}
-          <div className="sm:hidden px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="border-t border-slate-200 px-6 py-4 sm:hidden dark:border-slate-800">
             <button
               onClick={() => setShowForm(false)}
-              className="w-full py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold rounded-lg transition-colors"
+              className="w-full rounded-xl bg-slate-100 py-3 font-semibold text-slate-900 transition-colors hover:bg-slate-200 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
             >
               Fechar
             </button>
@@ -175,14 +161,9 @@ export function MobileQuickForm() {
         </div>
       </div>
 
-      {/* Toast notifications */}
       {toast && (
         <ToastContainer>
-          <Toast
-            type={toast.type}
-            message={toast.message}
-            onClose={() => setToast(null)}
-          />
+          <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />
         </ToastContainer>
       )}
     </>

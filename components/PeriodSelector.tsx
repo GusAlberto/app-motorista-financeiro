@@ -1,7 +1,7 @@
 /**
  * components/PeriodSelector.tsx
  *
- * Period filter selector for dashboard views.
+ * Period filter selector for dashboard views — segmented control.
  * Allows switching between today, week, month, and year views.
  * Updates URL params without page reload.
  */
@@ -42,23 +42,36 @@ export function PeriodSelector({ onPeriodChange, className }: PeriodSelectorProp
   }
 
   return (
-    <div className={cn('flex gap-2', className)}>
-      {PERIOD_OPTIONS.map((option) => (
-        <button
-          key={option.value}
-          onClick={() => handlePeriodChange(option.value)}
-          disabled={isPending}
-          className={cn(
-            'rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200',
-            currentPeriod === option.value
-              ? 'bg-blue-600 text-white dark:bg-blue-500'
-              : 'bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600',
-            isPending && 'opacity-50 cursor-not-allowed'
-          )}
-        >
-          {option.label}
-        </button>
-      ))}
+    <div
+      role="tablist"
+      aria-label="Período"
+      className={cn(
+        'inline-flex gap-1 rounded-xl bg-slate-100 p-1 dark:bg-slate-900',
+        isPending && 'opacity-70',
+        className
+      )}
+    >
+      {PERIOD_OPTIONS.map((option) => {
+        const isActive = currentPeriod === option.value
+        return (
+          <button
+            key={option.value}
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => handlePeriodChange(option.value)}
+            disabled={isPending}
+            className={cn(
+              'rounded-lg px-4 py-2 text-sm font-semibold transition-colors duration-150',
+              isActive
+                ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-white'
+                : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100',
+              isPending && 'cursor-not-allowed'
+            )}
+          >
+            {option.label}
+          </button>
+        )
+      })}
     </div>
   )
 }

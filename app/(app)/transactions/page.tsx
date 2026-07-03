@@ -1,29 +1,33 @@
 import { Suspense } from 'react'
-import Link from 'next/link'
+import type { Metadata } from 'next'
 import { createUserServerClient } from '@/lib/supabase/server'
 import { TransactionList } from '@/components/TransactionList'
 import { TransactionFilters } from '@/components/TransactionFilters'
 import { TransactionListSkeleton } from '@/components/TransactionListSkeleton'
 import { MobileQuickForm } from './mobile-quick-form'
-import { ArrowLeft } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Transações | App Motorista',
+  description: 'Histórico de ganhos e despesas.',
+}
 
 /**
  * Transactions page
- * Server component that displays all transactions with filtering and search
+ * Server component that displays all transactions with filtering and search.
+ * Navigation (back to dashboard, settings, etc.) is handled by the shared
+ * Navbar / BottomNav in app/(app)/layout.tsx — this page owns only its content.
  */
 export default async function TransactionsPage({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  // Get filter parameters from URL (searchParams is a Promise in Next.js 15)
   const params = await searchParams
   const period = (params.period as string) || 'month'
   const type = (params.type as string) || 'all'
   const category = (params.category as string) || ''
   const search = (params.search as string) || ''
 
-  // Fetch user's transactions
   const supabase = await createUserServerClient()
 
   const {
@@ -32,13 +36,12 @@ export default async function TransactionsPage({
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500">Faça login para ver suas transações</p>
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <p className="text-slate-500 dark:text-slate-400">Faça login para ver suas transações</p>
       </div>
     )
   }
 
-  // Fetch all transactions (filtering will be done client-side for now)
   const { data: transactions, error } = await supabase
     .from('transactions')
     .select('*')
@@ -50,47 +53,36 @@ export default async function TransactionsPage({
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex items-center gap-4">
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Transações</h1>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-slate-50">Transações</h1>
+        <p className="mt-1 text-slate-600 dark:text-slate-400">
+          Histórico completo dos seus ganhos e despesas.
+        </p>
       </div>
 
-      {/* Main Content */}
-      <div className="px-4 py-6 sm:px-6 max-w-6xl mx-auto">
-        {/* Quick Entry Form (Income / Expense) */}
-        <MobileQuickForm />
+      {/* Quick Entry Form (Income / Expense) */}
+      <MobileQuickForm />
 
-        {/* Filters */}
-        <div className="mb-6">
-          <TransactionFilters
-            defaultPeriod={period}
-            defaultType={type}
-            defaultCategory={category}
-            defaultSearch={search}
+      {/* Filters */}
+      <TransactionFilters
+        defaultPeriod={period}
+        defaultType={type}
+        defaultCategory={category}
+        defaultSearch={search}
+      />
+
+      {/* Transaction List */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <Suspense fallback={<TransactionListSkeleton />}>
+          <TransactionList
+            transactions={transactions || []}
+            period={period}
+            type={type}
+            category={category}
+            search={search}
           />
-        </div>
-
-        {/* Transaction List */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <Suspense fallback={<TransactionListSkeleton />}>
-            <TransactionList
-              transactions={transactions || []}
-              period={period}
-              type={type}
-              category={category}
-              search={search}
-            />
-          </Suspense>
-        </div>
+        </Suspense>
       </div>
     </div>
   )
