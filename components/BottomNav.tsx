@@ -40,11 +40,11 @@ export function BottomNav() {
               className={cn(
                 'flex min-w-[64px] flex-1 flex-col items-center justify-center gap-1 rounded-lg text-xs font-medium transition-colors',
                 isActive
-                  ? 'text-amber-600 dark:text-amber-400'
+                  ? 'text-slate-900 dark:text-white'
                   : 'text-slate-500 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300',
               )}
             >
-              <Icon className={cn('h-5 w-5', isActive && 'fill-amber-500/15')} strokeWidth={isActive ? 2.25 : 2} aria-hidden="true" />
+              <Icon className={cn('h-5 w-5', isActive && 'fill-slate-900/10 dark:fill-white/10')} strokeWidth={isActive ? 2.25 : 2} aria-hidden="true" />
               {label}
             </Link>
           )

@@ -38,7 +38,7 @@ export function Navbar() {
       {/* Logo + desktop nav links */}
       <div className="flex items-center gap-8">
         <Link href="/dashboard" className="flex items-center gap-2 font-display text-base font-bold text-slate-900 dark:text-white">
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500 text-slate-950">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-b from-slate-700 to-slate-950 text-white ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5">
             <Wallet className="h-4 w-4" aria-hidden="true" />
           </span>
           <span className="hidden sm:inline">App Motorista</span>
@@ -55,7 +55,7 @@ export function Navbar() {
                 className={cn(
                   'flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
                   isActive
-                    ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                    ? 'bg-slate-100 text-slate-900 dark:bg-white/10 dark:text-white'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white',
                 )}
               >
@@ -85,7 +85,7 @@ export function Navbar() {
             'flex h-11 w-11 items-center justify-center rounded-lg',
             'text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900',
             'dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-50',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white',
           )}
           aria-label={resolvedTheme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
           title={resolvedTheme === 'dark' ? 'Tema claro' : 'Tema escuro'}
@@ -105,7 +105,7 @@ export function Navbar() {
             'text-sm font-medium text-slate-600 transition-colors',
             'hover:bg-slate-100 hover:text-slate-900',
             'dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-50',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white',
           )}
           aria-label="Sair da conta"
         >
