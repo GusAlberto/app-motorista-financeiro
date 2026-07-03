@@ -15,15 +15,15 @@ PWA mobile-first para motoristas de aplicativo (Uber, 99, InDrive) gerenciarem s
 
 ## Funcionalidades
 
-- 🔐 Autenticação por email/senha com RLS (isolamento total por usuário)
-- 🛡️ Segurança: rate limiting em login/signup/reset de senha, Content-Security-Policy e re-autenticação para troca de senha
-- 📊 Dashboard financeiro em tempo real (ganhos, despesas, lucro) com filtro por período (Hoje / Semana / Mês / Ano)
-- 💸 Registro rápido de ganhos e despesas (< 15s) via modal, acionado pelo botão **"+"** central da barra de navegação inferior no mobile
-- 📝 Lista de transações com filtros, busca, edição e exclusão (soft delete)
-- 📅 Datas tratadas como **data de calendário** (sem conversão de fuso), evitando que uma transação de "hoje" apareça no dia anterior
-- 🌐 Páginas públicas com SEO (home, FAQ, privacidade, termos)
-- 🌙 Dark mode
-- 📱 Mobile-first + PWA instalável (funciona offline)
+-  Autenticação por email/senha com RLS (isolamento total por usuário)
+-  Segurança: rate limiting em login/signup/reset de senha, Content-Security-Policy e re-autenticação para troca de senha
+-  Dashboard financeiro em tempo real (ganhos, despesas, lucro) com filtro por período (Hoje / Semana / Mês / Ano)
+-  Registro rápido de ganhos e despesas (< 15s) via modal, acionado pelo botão **"+"** central da barra de navegação inferior no mobile
+-  Lista de transações com filtros, busca, edição e exclusão (soft delete)
+-  Datas tratadas como **data de calendário** (sem conversão de fuso), evitando que uma transação de "hoje" apareça no dia anterior
+-  Páginas públicas com SEO (home, FAQ, privacidade, termos)
+-  Dark mode
+-  Mobile-first + PWA instalável (funciona offline)
 
 ## Desenvolvimento
 
@@ -71,7 +71,7 @@ Guias detalhados: [DEPLOY.md](DEPLOY.md) (produção) · [PERFORMANCE.md](PERFOR
 | 2. Páginas Públicas & SEO | ✅ |
 | 3. Dashboard & Analytics | ✅ |
 | 4. Transações & Histórico | ✅ |
-| 5. PWA, Performance & Deploy | 🚧 |
+| 5. PWA, Performance & Deploy | ✅ |
 
 ## Licença
 
