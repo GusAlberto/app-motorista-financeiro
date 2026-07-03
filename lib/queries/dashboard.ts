@@ -16,38 +16,45 @@ import type {
 } from '@/types/dashboard'
 
 /**
- * Get the date range for a given period (from today)
+ * Get the date range for a given period (from today) as UTC ISO strings
+ * Using ISO strings avoids timezone conversion bugs
  */
-function getPeriodDateRange(period: PeriodType): { start: Date; end: Date } {
-  const end = new Date()
-  const start = new Date()
+function getPeriodDateRange(period: PeriodType): { start: string; end: string } {
+  const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+  const startDate = new Date()
+  const endDate = new Date()
 
   switch (period) {
     case 'today':
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      return {
+        start: `${today}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
     case 'week':
       // Start from Monday of this week
-      const day = end.getDay()
-      const diff = end.getDate() - day + (day === 0 ? -6 : 1)
-      start.setDate(diff)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      const day = endDate.getDay()
+      const diff = endDate.getDate() - day + (day === 0 ? -6 : 1)
+      startDate.setDate(diff)
+      const weekStart = startDate.toISOString().split('T')[0]
+      return {
+        start: `${weekStart}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
     case 'month':
-      start.setDate(1)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      startDate.setDate(1)
+      const monthStart = startDate.toISOString().split('T')[0]
+      return {
+        start: `${monthStart}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
     case 'year':
-      start.setMonth(0, 1)
-      start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
-      break
+      startDate.setMonth(0, 1)
+      const yearStart = startDate.toISOString().split('T')[0]
+      return {
+        start: `${yearStart}T00:00:00Z`,
+        end: `${today}T23:59:59Z`,
+      }
   }
-
-  return { start, end }
 }
 
 /**
