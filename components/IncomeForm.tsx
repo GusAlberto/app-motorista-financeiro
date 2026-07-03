@@ -1,0 +1,192 @@
+'use client'
+
+import { useState } from 'react'
+import { useFormStatus } from 'react-dom'
+import type { IncomeTransaction } from '@/lib/validation/transaction'
+import { INCOME_CATEGORIES } from '@/lib/validation/transaction'
+
+interface IncomeFormProps {
+  onSuccess?: (transaction: IncomeTransaction) => void
+  onError?: (error: string) => void
+  isPending?: boolean
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full h-12 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+    >
+      {pending ? (
+        <>
+          <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          Logging...
+        </>
+      ) : (
+        'Log Income'
+      )}
+    </button>
+  )
+}
+
+export function IncomeForm({ onSuccess, onError, isPending: externalPending }: IncomeFormProps) {
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
+  const [category, setCategory] = useState<string>('ride')
+  const [amount, setAmount] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const handleSubmit = async (formData: FormData) => {
+    // Clear previous errors
+    setErrors({})
+
+    try {
+      // Create transaction object
+      const transaction = {
+        type: 'income' as const,
+        amount: parseFloat(amount),
+        category,
+        description: description || undefined,
+        transaction_date: new Date(date),
+      }
+
+      // Basic validation
+      const newErrors: Record<string, string> = {}
+
+      if (!amount || parseFloat(amount) <= 0) {
+        newErrors.amount = 'Amount must be greater than 0'
+      }
+
+      if (!category) {
+        newErrors.category = 'Category is required'
+      }
+
+      if (!date) {
+        newErrors.transaction_date = 'Date is required'
+      }
+
+      if (new Date(date) > new Date()) {
+        newErrors.transaction_date = 'Transaction date cannot be in the future'
+      }
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors)
+        onError?.(Object.values(newErrors)[0])
+        return
+      }
+
+      // Call the server action or API
+      // For now, we'll just call the onSuccess callback
+      // This will be connected to the server action in Task 1.3
+      onSuccess?.(transaction)
+
+      // Reset form
+      setAmount('')
+      setDescription('')
+      setDate(new Date().toISOString().split('T')[0])
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to log income'
+      setErrors({ submit: message })
+      onError?.(message)
+    }
+  }
+
+  return (
+    <form action={handleSubmit} className="space-y-4">
+      {/* Amount Input */}
+      <div className="space-y-2">
+        <label htmlFor="amount" className="block text-sm font-semibold text-gray-900 dark:text-white">
+          Amount (R$)
+        </label>
+        <input
+          id="amount"
+          type="number"
+          inputMode="decimal"
+          placeholder="0.00"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          step="0.01"
+          min="0.01"
+          autoFocus
+          className="w-full px-4 py-3 text-lg bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+        />
+        {errors.amount && (
+          <p className="text-xs text-red-600 dark:text-red-400">{errors.amount}</p>
+        )}
+      </div>
+
+      {/* Category Select */}
+      <div className="space-y-2">
+        <label htmlFor="category" className="block text-sm font-semibold text-gray-900 dark:text-white">
+          Category
+        </label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white"
+        >
+          {INCOME_CATEGORIES.map((cat) => (
+            <option key={cat.value} value={cat.value}>
+              {cat.label}
+            </option>
+          ))}
+        </select>
+        {errors.category && (
+          <p className="text-xs text-red-600 dark:text-red-400">{errors.category}</p>
+        )}
+      </div>
+
+      {/* Date Input */}
+      <div className="space-y-2">
+        <label htmlFor="date" className="block text-sm font-semibold text-gray-900 dark:text-white">
+          Date
+        </label>
+        <input
+          id="date"
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white"
+        />
+        {errors.transaction_date && (
+          <p className="text-xs text-red-600 dark:text-red-400">{errors.transaction_date}</p>
+        )}
+      </div>
+
+      {/* Description Input */}
+      <div className="space-y-2">
+        <label htmlFor="description" className="block text-sm font-semibold text-gray-900 dark:text-white">
+          Description (optional)
+        </label>
+        <textarea
+          id="description"
+          placeholder="Enter transaction details..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          maxLength={500}
+          rows={2}
+          className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
+        />
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          {description.length}/500
+        </p>
+      </div>
+
+      {/* Submit Error */}
+      {errors.submit && (
+        <div className="p-3 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
+          <p className="text-sm text-red-700 dark:text-red-200">{errors.submit}</p>
+        </div>
+      )}
+
+      {/* Submit Button */}
+      <div className="pt-2">
+        <SubmitButton />
+      </div>
+    </form>
+  )
+}
