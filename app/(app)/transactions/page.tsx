@@ -4,7 +4,8 @@ import { createUserServerClient } from '@/lib/supabase/server'
 import { TransactionList } from '@/components/TransactionList'
 import { TransactionFilters } from '@/components/TransactionFilters'
 import { TransactionListSkeleton } from '@/components/TransactionListSkeleton'
-import { Plus, ArrowLeft } from 'lucide-react'
+import { MobileQuickForm } from './mobile-quick-form'
+import { ArrowLeft } from 'lucide-react'
 
 /**
  * Transactions page
@@ -13,13 +14,14 @@ import { Plus, ArrowLeft } from 'lucide-react'
 export default async function TransactionsPage({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) {
-  // Get filter parameters from URL
-  const period = (searchParams.period as string) || 'month'
-  const type = (searchParams.type as string) || 'all'
-  const category = (searchParams.category as string) || ''
-  const search = (searchParams.search as string) || ''
+  // Get filter parameters from URL (searchParams is a Promise in Next.js 15)
+  const params = await searchParams
+  const period = (params.period as string) || 'month'
+  const type = (params.type as string) || 'all'
+  const category = (params.category as string) || ''
+  const search = (params.search as string) || ''
 
   // Fetch user's transactions
   const supabase = await createUserServerClient()
@@ -31,7 +33,7 @@ export default async function TransactionsPage({
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500">Please log in to view transactions</p>
+        <p className="text-gray-500">Faça login para ver suas transações</p>
       </div>
     )
   }
@@ -51,29 +53,22 @@ export default async function TransactionsPage({
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-4 sm:px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/dashboard"
-              className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Transactions</h1>
-          </div>
-
+        <div className="max-w-6xl mx-auto flex items-center gap-4">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
-            <Plus className="w-5 h-5" />
-            <span className="hidden sm:inline">New Transaction</span>
+            <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-gray-300" />
           </Link>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Transações</h1>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="px-4 py-6 sm:px-6 max-w-6xl mx-auto">
+        {/* Quick Entry Form (Income / Expense) */}
+        <MobileQuickForm />
+
         {/* Filters */}
         <div className="mb-6">
           <TransactionFilters

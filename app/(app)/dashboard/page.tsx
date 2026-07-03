@@ -7,6 +7,7 @@
  */
 
 import { Suspense } from 'react'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getDashboardData, getChartData } from '@/lib/queries/dashboard'
 import { DashboardKPICard } from '@/components/DashboardKPICard'
@@ -14,7 +15,7 @@ import { PeriodSelector } from '@/components/PeriodSelector'
 import { EarningsChart } from '@/components/EarningsChart'
 import { DashboardErrorBoundary } from '@/components/DashboardErrorBoundary'
 import { DashboardSkeleton } from '@/components/DashboardSkeleton'
-import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react'
+import { TrendingUp, TrendingDown, DollarSign, Plus } from 'lucide-react'
 import type { PeriodType } from '@/types/dashboard'
 
 export const metadata: Metadata = {
@@ -38,11 +39,20 @@ async function DashboardContent({ period }: { period: PeriodType }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50">Dashboard</h1>
-        <p className="mt-1 text-gray-600 dark:text-gray-400">
-          Visão geral dos seus ganhos e despesas — {dashboardData.period_label}
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50">Dashboard</h1>
+          <p className="mt-1 text-gray-600 dark:text-gray-400">
+            Visão geral dos seus ganhos e despesas — {dashboardData.period_label}
+          </p>
+        </div>
+        <Link
+          href="/transactions"
+          className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700"
+        >
+          <Plus className="h-5 w-5" />
+          <span>Nova Transação</span>
+        </Link>
       </div>
 
       {/* Period Selector */}

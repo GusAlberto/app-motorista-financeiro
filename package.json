@@ -26,6 +26,7 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.12.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

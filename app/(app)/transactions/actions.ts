@@ -4,9 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { createUserServerClient } from '@/lib/supabase/server'
 import {
   transactionSchema,
-  incomeTransactionSchema,
-  expenseTransactionSchema,
+  editTransactionSchema,
   type Transaction,
+  type EditTransaction,
 } from '@/lib/validation/transaction'
 import type { Database } from '@/types/database'
 
@@ -79,8 +79,8 @@ export async function createTransaction(data: any): Promise<ActionResult> {
     }
 
     // Revalidate cache
-    revalidatePath('/app/transactions')
-    revalidatePath('/app/dashboard')
+    revalidatePath('/transactions')
+    revalidatePath('/dashboard')
 
     return {
       success: true,
@@ -106,7 +106,7 @@ export async function createTransaction(data: any): Promise<ActionResult> {
  */
 export async function updateTransaction(
   id: string,
-  data: Partial<Transaction>
+  data: EditTransaction
 ): Promise<ActionResult> {
   try {
     const supabase = await createUserServerClient()
@@ -125,9 +125,9 @@ export async function updateTransaction(
     }
 
     // Validate input
-    let validated: Partial<Transaction>
+    let validated: EditTransaction
     try {
-      validated = transactionSchema.partial().parse(data)
+      validated = editTransactionSchema.parse(data)
     } catch (validationError: any) {
       return {
         success: false,
@@ -172,8 +172,8 @@ export async function updateTransaction(
     }
 
     // Revalidate cache
-    revalidatePath('/app/transactions')
-    revalidatePath('/app/dashboard')
+    revalidatePath('/transactions')
+    revalidatePath('/dashboard')
 
     return {
       success: true,
@@ -234,8 +234,8 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
     }
 
     // Revalidate cache
-    revalidatePath('/app/transactions')
-    revalidatePath('/app/dashboard')
+    revalidatePath('/transactions')
+    revalidatePath('/dashboard')
 
     return {
       success: true,

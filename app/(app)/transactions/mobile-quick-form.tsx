@@ -26,13 +26,13 @@ export function MobileQuickForm() {
       await handleCreateTransaction(transaction)
       setToast({
         type: 'success',
-        message: `${transaction.type === 'income' ? 'Income' : 'Expense'} logged successfully`,
+        message: `${transaction.type === 'income' ? 'Ganho' : 'Despesa'} registrado com sucesso`,
       })
       setShowForm(false)
     } catch (error) {
       setToast({
         type: 'error',
-        message: error instanceof Error ? error.message : 'Failed to save',
+        message: error instanceof Error ? error.message : 'Falha ao salvar',
       })
     }
   }
@@ -67,7 +67,7 @@ export function MobileQuickForm() {
             className="flex items-center gap-2 flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors h-12"
           >
             <TrendingUp className="w-5 h-5" />
-            Log Income
+            Registrar Ganho
           </button>
           <button
             onClick={() => {
@@ -77,7 +77,7 @@ export function MobileQuickForm() {
             className="flex items-center gap-2 flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors h-12"
           >
             <TrendingDown className="w-5 h-5" />
-            Log Expense
+            Registrar Despesa
           </button>
         </div>
 
@@ -112,7 +112,7 @@ export function MobileQuickForm() {
           {/* Header */}
           <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-              {activeTab === 'income' ? 'Log Income' : 'Log Expense'}
+              {activeTab === 'income' ? 'Registrar Ganho' : 'Registrar Despesa'}
             </h2>
             <button
               onClick={() => setShowForm(false)}
@@ -132,7 +132,7 @@ export function MobileQuickForm() {
                   : 'text-gray-600 dark:text-gray-400'
               }`}
             >
-              Income
+              Ganho
             </button>
             <button
               onClick={() => setActiveTab('expense')}
@@ -142,7 +142,7 @@ export function MobileQuickForm() {
                   : 'text-gray-600 dark:text-gray-400'
               }`}
             >
-              Expense
+              Despesa
             </button>
           </div>
 
@@ -169,7 +169,7 @@ export function MobileQuickForm() {
               onClick={() => setShowForm(false)}
               className="w-full py-3 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-semibold rounded-lg transition-colors"
             >
-              Close
+              Fechar
             </button>
           </div>
         </div>

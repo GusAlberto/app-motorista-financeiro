@@ -77,27 +77,34 @@ export const transactionSchema = z.discriminatedUnion('type', [
 export type Transaction = z.infer<typeof transactionSchema>
 
 /**
- * Edit transaction schema (allows partial updates)
+ * Edit transaction schema (allows partial updates).
+ * NOTE: discriminated unions don't support .partial(), so this is a plain
+ * object schema with all editable fields optional. `type` is immutable on edit.
  */
-export const editTransactionSchema = transactionSchema.partial()
+export const editTransactionSchema = z.object({
+  amount: baseTransactionSchema.amount.optional(),
+  category: z.string().min(1).max(50).optional(),
+  description: baseTransactionSchema.description,
+  transaction_date: baseTransactionSchema.transaction_date.optional(),
+})
 
 export type EditTransaction = z.infer<typeof editTransactionSchema>
 
 /**
- * Category options
+ * Category options (Portuguese labels)
  */
 export const INCOME_CATEGORIES = [
-  { value: 'ride', label: 'Ride' },
-  { value: 'bonus', label: 'Bonus' },
-  { value: 'other_income', label: 'Other Income' },
+  { value: 'ride', label: 'Corrida' },
+  { value: 'bonus', label: 'Bônus' },
+  { value: 'other_income', label: 'Outros Ganhos' },
 ]
 
 export const EXPENSE_CATEGORIES = [
-  { value: 'fuel', label: 'Fuel' },
-  { value: 'maintenance', label: 'Maintenance' },
-  { value: 'tolls', label: 'Tolls' },
-  { value: 'parking', label: 'Parking' },
-  { value: 'car_wash', label: 'Car Wash' },
-  { value: 'insurance', label: 'Insurance' },
-  { value: 'other_expense', label: 'Other Expense' },
+  { value: 'fuel', label: 'Combustível' },
+  { value: 'maintenance', label: 'Manutenção' },
+  { value: 'tolls', label: 'Pedágios' },
+  { value: 'parking', label: 'Estacionamento' },
+  { value: 'car_wash', label: 'Lavagem' },
+  { value: 'insurance', label: 'Seguro' },
+  { value: 'other_expense', label: 'Outras Despesas' },
 ]

@@ -2,11 +2,18 @@
 
 import { useState } from 'react'
 import { useFormStatus } from 'react-dom'
-import type { ExpenseTransaction } from '@/lib/validation/transaction'
 import { EXPENSE_CATEGORIES } from '@/lib/validation/transaction'
 
+interface ExpenseFormData {
+  type: 'expense'
+  amount: number
+  category: string
+  description?: string
+  transaction_date: Date
+}
+
 interface ExpenseFormProps {
-  onSuccess?: (transaction: ExpenseTransaction) => void
+  onSuccess?: (transaction: ExpenseFormData) => void
   onError?: (error: string) => void
   isPending?: boolean
 }
@@ -23,10 +30,10 @@ function SubmitButton() {
       {pending ? (
         <>
           <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-          Logging...
+          Registrando...
         </>
       ) : (
-        'Log Expense'
+        'Registrar Despesa'
       )}
     </button>
   )
@@ -57,19 +64,19 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
       const newErrors: Record<string, string> = {}
 
       if (!amount || parseFloat(amount) <= 0) {
-        newErrors.amount = 'Amount must be greater than 0'
+        newErrors.amount = 'O valor deve ser maior que 0'
       }
 
       if (!category) {
-        newErrors.category = 'Category is required'
+        newErrors.category = 'Categoria é obrigatória'
       }
 
       if (!date) {
-        newErrors.transaction_date = 'Date is required'
+        newErrors.transaction_date = 'Data é obrigatória'
       }
 
       if (new Date(date) > new Date()) {
-        newErrors.transaction_date = 'Transaction date cannot be in the future'
+        newErrors.transaction_date = 'A data não pode ser no futuro'
       }
 
       if (Object.keys(newErrors).length > 0) {
@@ -88,7 +95,7 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
       setDescription('')
       setDate(new Date().toISOString().split('T')[0])
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to log expense'
+      const message = error instanceof Error ? error.message : 'Falha ao registrar despesa'
       setErrors({ submit: message })
       onError?.(message)
     }
@@ -99,7 +106,7 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
       {/* Amount Input */}
       <div className="space-y-2">
         <label htmlFor="amount" className="block text-sm font-semibold text-gray-900 dark:text-white">
-          Amount (R$)
+          Valor (R$)
         </label>
         <input
           id="amount"
@@ -121,7 +128,7 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
       {/* Category Select */}
       <div className="space-y-2">
         <label htmlFor="category" className="block text-sm font-semibold text-gray-900 dark:text-white">
-          Category
+          Categoria
         </label>
         <select
           id="category"
@@ -143,7 +150,7 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
       {/* Date Input */}
       <div className="space-y-2">
         <label htmlFor="date" className="block text-sm font-semibold text-gray-900 dark:text-white">
-          Date
+          Data
         </label>
         <input
           id="date"
@@ -160,11 +167,11 @@ export function ExpenseForm({ onSuccess, onError, isPending: externalPending }: 
       {/* Description Input */}
       <div className="space-y-2">
         <label htmlFor="description" className="block text-sm font-semibold text-gray-900 dark:text-white">
-          Description (optional)
+          Descrição (opcional)
         </label>
         <textarea
           id="description"
-          placeholder="Enter transaction details..."
+          placeholder="Detalhes da transação..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={500}
