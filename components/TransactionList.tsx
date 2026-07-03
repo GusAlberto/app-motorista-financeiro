@@ -5,6 +5,7 @@ import { TransactionItem } from '@/components/TransactionItem'
 import { DeleteTransactionConfirm } from '@/components/DeleteTransactionConfirm'
 import { EditTransactionModal } from '@/components/EditTransactionModal'
 import { useTransactionForm } from '@/lib/hooks/useTransactionForm'
+import { formatCalendarDate } from '@/lib/utils/date'
 import type { Database } from '@/types/database'
 
 type Transaction = Database['public']['Tables']['transactions']['Row']
@@ -103,7 +104,7 @@ function groupByDate(transactions: Transaction[]): Map<string, Transaction[]> {
   const grouped = new Map<string, Transaction[]>()
 
   transactions.forEach((tx) => {
-    const dateStr = new Date(tx.transaction_date).toLocaleDateString('pt-BR', {
+    const dateStr = formatCalendarDate(tx.transaction_date, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
