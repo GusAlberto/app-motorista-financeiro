@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search, Filter, X } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '@/lib/validation/transaction'
 
 interface TransactionFiltersProps {
@@ -25,6 +25,9 @@ const TYPE_LABELS: Record<string, string> = {
   expense: 'Despesas',
 }
 
+const selectClasses =
+  'px-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 text-slate-900 dark:text-white disabled:opacity-50 text-sm font-medium'
+
 export function TransactionFilters({
   defaultPeriod = 'month',
   defaultType = 'all',
@@ -38,7 +41,6 @@ export function TransactionFilters({
   const [type, setType] = useState(defaultType)
   const [category, setCategory] = useState(defaultCategory)
   const [search, setSearch] = useState(defaultSearch)
-  const [showCategoryFilter, setShowCategoryFilter] = useState(false)
 
   // Get available categories based on selected type
   const availableCategories =
@@ -100,24 +102,23 @@ export function TransactionFilters({
     <div className="space-y-4">
       {/* Search bar */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
         <input
           type="text"
           placeholder="Buscar por descrição ou categoria..."
           value={search}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+          className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:ring-amber-400"
         />
       </div>
 
       {/* Filter controls */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-        {/* Period select */}
+      <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
         <select
           value={period}
           onChange={(e) => handlePeriodChange(e.target.value)}
           disabled={isPending}
-          className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white disabled:opacity-50"
+          className={selectClasses}
         >
           <option value="today">Hoje</option>
           <option value="week">Esta Semana</option>
@@ -125,25 +126,23 @@ export function TransactionFilters({
           <option value="year">Este Ano</option>
         </select>
 
-        {/* Type select */}
         <select
           value={type}
           onChange={(e) => handleTypeChange(e.target.value)}
           disabled={isPending}
-          className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white disabled:opacity-50"
+          className={selectClasses}
         >
           <option value="all">Todos os Tipos</option>
           <option value="income">Ganhos</option>
           <option value="expense">Despesas</option>
         </select>
 
-        {/* Category select (only when type is selected) */}
         {type !== 'all' && availableCategories.length > 0 && (
           <select
             value={category}
             onChange={(e) => handleCategoryChange(e.target.value)}
             disabled={isPending}
-            className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-white disabled:opacity-50"
+            className={selectClasses}
           >
             <option value="">Todas as Categorias</option>
             {availableCategories.map((cat) => (
@@ -154,14 +153,13 @@ export function TransactionFilters({
           </select>
         )}
 
-        {/* Clear filters button */}
         {hasActiveFilters && (
           <button
             onClick={handleClearFilters}
             disabled={isPending}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-200 disabled:opacity-50 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" aria-hidden="true" />
             Limpar
           </button>
         )}
@@ -171,49 +169,53 @@ export function TransactionFilters({
       {hasActiveFilters && (
         <div className="flex flex-wrap gap-2">
           {period !== 'month' && (
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
+            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
               <span>Período: {PERIOD_LABELS[period] || period}</span>
               <button
                 onClick={() => handlePeriodChange('month')}
-                className="hover:text-blue-600 dark:hover:text-blue-300"
+                aria-label="Remover filtro de período"
+                className="hover:text-slate-900 dark:hover:text-white"
               >
-                ✕
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           )}
 
           {type !== 'all' && (
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
+            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
               <span>Tipo: {TYPE_LABELS[type] || type}</span>
               <button
                 onClick={() => handleTypeChange('all')}
-                className="hover:text-blue-600 dark:hover:text-blue-300"
+                aria-label="Remover filtro de tipo"
+                className="hover:text-slate-900 dark:hover:text-white"
               >
-                ✕
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           )}
 
           {category && (
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
+            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
               <span>Categoria: {[...INCOME_CATEGORIES, ...EXPENSE_CATEGORIES].find((c) => c.value === category)?.label || category}</span>
               <button
                 onClick={() => handleCategoryChange('')}
-                className="hover:text-blue-600 dark:hover:text-blue-300"
+                aria-label="Remover filtro de categoria"
+                className="hover:text-slate-900 dark:hover:text-white"
               >
-                ✕
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           )}
 
           {search && (
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full text-sm">
-              <span>Busca: "{search}"</span>
+            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <span>Busca: &ldquo;{search}&rdquo;</span>
               <button
                 onClick={() => handleSearchChange('')}
-                className="hover:text-blue-600 dark:hover:text-blue-300"
+                aria-label="Remover filtro de busca"
+                className="hover:text-slate-900 dark:hover:text-white"
               >
-                ✕
+                <X className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           )}
