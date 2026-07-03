@@ -196,7 +196,6 @@ export async function updateTransaction(
 
 /**
  * Soft delete a transaction (mark as deleted_at)
- * Note: This requires the deleted_at column to be added (will be done in migration 005)
  */
 export async function deleteTransaction(id: string): Promise<ActionResult> {
   try {
@@ -215,19 +214,16 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
       }
     }
 
-    // For now, hard delete (will change to soft delete after migration 005)
-    // In production, we'd set deleted_at instead:
-    // const { error } = await supabase
-    //   .from('transactions')
-    //   .update({ deleted_at: new Date().toISOString() })
-    //   .eq('id', id)
-    //   .eq('user_id', user.id)
-
+    // Soft delete by setting deleted_at timestamp
     const { error: deleteError } = await supabase
       .from('transactions')
-      .delete()
+      .update({
+        deleted_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      })
       .eq('id', id)
       .eq('user_id', user.id)
+      .is('deleted_at', null) // Only soft-delete if not already deleted
 
     if (deleteError) {
       console.error('Transaction delete error:', deleteError)

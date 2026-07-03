@@ -124,6 +124,7 @@ export interface Database {
           transaction_date: string
           created_at: string
           updated_at: string
+          deleted_at: string | null
         }
         Insert: {
           id?: string
@@ -135,6 +136,7 @@ export interface Database {
           transaction_date: string
           created_at?: string
           updated_at?: string
+          deleted_at?: string | null
         }
         Update: {
           id?: string
@@ -146,6 +148,7 @@ export interface Database {
           transaction_date?: string
           created_at?: string
           updated_at?: string
+          deleted_at?: string | null
         }
         Relationships: [
           {
