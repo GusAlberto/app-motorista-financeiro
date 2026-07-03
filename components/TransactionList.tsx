@@ -158,10 +158,10 @@ export function TransactionList({
     return (
       <div className="flex flex-col items-center justify-center py-12 px-4">
         <div className="text-center">
-          <p className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          <p className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
             Nenhuma transação encontrada
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             {transactions.length === 0
               ? 'Comece registrando sua primeira transação'
               : 'Tente ajustar os filtros'}
@@ -173,18 +173,18 @@ export function TransactionList({
 
   return (
     <>
-    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+    <div className="divide-y divide-slate-200 dark:divide-slate-800">
       {Array.from(grouped.entries()).map(([dateStr, dateTransactions]) => (
         <div key={dateStr}>
           {/* Date Header */}
-          <div className="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-700">
-            <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">
+          <div className="px-4 py-3 sm:px-6 bg-slate-50 dark:bg-slate-800/60">
+            <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wide">
               {dateStr}
             </p>
           </div>
 
           {/* Transactions for this date */}
-          <div className="divide-y divide-gray-100 dark:divide-gray-700">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {dateTransactions.map((transaction) => (
               <TransactionItem
                 key={transaction.id}
@@ -197,7 +197,7 @@ export function TransactionList({
           </div>
 
           {/* Daily total */}
-          <div className="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+          <div className="px-4 py-3 sm:px-6 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800">
             {(() => {
               const income = dateTransactions
                 .filter((tx) => tx.type === 'income')
@@ -211,19 +211,19 @@ export function TransactionList({
 
               return (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">Total do Dia</span>
+                  <span className="text-slate-600 dark:text-slate-400">Total do Dia</span>
                   <div className="flex items-center gap-4">
-                    <span className="text-green-600 dark:text-green-400 font-semibold">
+                    <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
                       +R$ {income.toFixed(2).replace('.', ',')}
                     </span>
-                    <span className="text-red-600 dark:text-red-400 font-semibold">
+                    <span className="text-red-700 dark:text-red-400 font-semibold">
                       -R$ {expenses.toFixed(2).replace('.', ',')}
                     </span>
                     <span
                       className={`font-semibold ${
                         net >= 0
-                          ? 'text-green-600 dark:text-green-400'
-                          : 'text-red-600 dark:text-red-400'
+                          ? 'text-emerald-700 dark:text-emerald-400'
+                          : 'text-red-700 dark:text-red-400'
                       }`}
                     >
                       R$ {Math.abs(net).toFixed(2).replace('.', ',')}
@@ -237,7 +237,7 @@ export function TransactionList({
       ))}
 
       {/* Overall totals */}
-      <div className="px-4 py-4 sm:px-6 bg-gray-100 dark:bg-gray-700 border-t-2 border-gray-300 dark:border-gray-600">
+      <div className="px-4 py-4 sm:px-6 bg-slate-100 dark:bg-slate-800 border-t-2 border-slate-300 dark:border-slate-700">
         {(() => {
           const income = filtered
             .filter((tx) => tx.type === 'income')
@@ -251,27 +251,27 @@ export function TransactionList({
 
           return (
             <div className="flex items-center justify-between">
-              <span className="text-base font-bold text-gray-900 dark:text-white">Total</span>
+              <span className="text-base font-bold text-slate-900 dark:text-white">Total</span>
               <div className="flex items-center gap-4">
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Ganhos</p>
-                  <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Ganhos</p>
+                  <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
                     R$ {income.toFixed(2).replace('.', ',')}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Despesas</p>
-                  <p className="text-lg font-bold text-red-600 dark:text-red-400">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Despesas</p>
+                  <p className="text-lg font-bold text-red-700 dark:text-red-400">
                     R$ {expenses.toFixed(2).replace('.', ',')}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Líquido</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Líquido</p>
                   <p
                     className={`text-lg font-bold ${
                       net >= 0
-                        ? 'text-green-600 dark:text-green-400'
-                        : 'text-red-600 dark:text-red-400'
+                        ? 'text-emerald-700 dark:text-emerald-400'
+                        : 'text-red-700 dark:text-red-400'
                     }`}
                   >
                     R$ {Math.abs(net).toFixed(2).replace('.', ',')}

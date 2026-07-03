@@ -28,7 +28,7 @@ export function DashboardErrorBoundary({
     return (
       <div
         className={cn(
-          'rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-900/50 dark:bg-red-950/30',
+          'rounded-2xl border border-red-200 bg-red-50 p-6 dark:border-red-900/50 dark:bg-red-950/30',
           className
         )}
       >

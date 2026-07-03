@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* Class-based dark mode. Without this, Tailwind v4's `dark:` variant
+   defaults to `@media (prefers-color-scheme: dark)` only — meaning every
+   `dark:` utility in the app ignores the `.dark` class that
+   ThemeProvider adds/removes on <html>, and the manual light/dark
+   toggle (Navbar, Settings) has no visual effect; only the OS-level
+   preference ever matched. This makes the toggle actually work. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================================
+   Design tokens — App Motorista
+   Premium mobility aesthetic: Space Grotesk display + DM Sans body,
+   grayscale brand identity (black/white/silver/gray — no color accent).
+   Emerald/red stay reserved strictly for financial semantics
+   (income/expense), never decorative. Neutrals stay on Tailwind's
+   slate scale (already used everywhere, no second gray scale to fight).
+   ============================================================ */
+
+@theme inline {
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
 /* ============================================================
    Global base styles for app-motorista
    Mobile-first, performance-focused, WCAG AA contrast
@@ -38,14 +60,227 @@
   }
 }
 
-/* Focus-visible: only show ring on keyboard navigation, not mouse click */
+/* Focus-visible: only show ring on keyboard navigation, not mouse click.
+   Monochrome (matches the grayscale brand identity) but stays legible
+   against both black and white surfaces via the offset creating a halo,
+   rather than relying on a single hue that could wash out on either. */
 @layer base {
   :focus:not(:focus-visible) {
     outline: none;
   }
 
   :focus-visible {
-    outline: 2px solid rgb(59 130 246); /* blue-500 */
+    outline: 2px solid rgb(15 23 42); /* slate-900 */
     outline-offset: 2px;
+  }
+
+  .dark :focus-visible {
+    outline-color: rgb(255 255 255);
+  }
+
+  ::selection {
+    background-color: rgb(15 23 42 / 0.15); /* slate-900 @ 15% */
+  }
+
+  .dark ::selection {
+    background-color: rgb(255 255 255 / 0.2);
+  }
+}
+
+/* ============================================================
+   Metallic "sheen" micro-interaction — a light sweep across a
+   button's surface on hover/focus, evoking brushed metal / a
+   premium car finish instead of a color accent. GPU-cheap
+   (transform only), no JS, fully disabled under reduced-motion.
+   Sheen color flips via the .dark ancestor so it stays visible
+   whether the button itself is black (light mode) or white
+   (dark mode) — see components using .btn-primary.
+   ============================================================ */
+@layer components {
+  .btn-sheen {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    --sheen-color: rgb(255 255 255 / 0.35);
+  }
+
+  .dark .btn-sheen {
+    --sheen-color: rgb(0 0 0 / 0.15);
+  }
+
+  .btn-sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 20%, var(--sheen-color) 50%, transparent 80%);
+    transform: translateX(-120%);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .btn-sheen:hover::after,
+  .btn-sheen:focus-visible::after {
+    transform: translateX(120%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-sheen::after {
+      display: none;
+    }
+  }
+
+  /* Primary CTA: solid black in light mode, inverts to solid white in
+     dark mode — a photo-negative flip so it always reads as the
+     highest-contrast element against the page, without any color. */
+  .btn-primary {
+    background-color: rgb(15 23 42); /* slate-900 */
+    color: rgb(255 255 255);
+  }
+
+  .btn-primary:hover {
+    background-color: rgb(2 6 23); /* slate-950 */
+  }
+
+  .dark .btn-primary {
+    background-color: rgb(255 255 255);
+    color: rgb(2 6 23); /* slate-950 */
+  }
+
+  .dark .btn-primary:hover {
+    background-color: rgb(226 232 240); /* slate-200 */
+  }
+
+  /* Standalone sheen for surfaces that are ALWAYS light regardless of
+     site theme (e.g. the white "Signup" pill on the always-dark desktop
+     navbar) — a dark sweep, not tied to the .dark-ancestor flip that
+     .btn-sheen uses, so it stays correct even when the page itself is
+     in light mode. Fully independent rule (not layered on .btn-sheen)
+     to avoid a specificity fight with `.dark .btn-sheen`. */
+  .btn-sheen-invert {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .btn-sheen-invert::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 20%, rgb(0 0 0 / 0.12) 50%, transparent 80%);
+    transform: translateX(-120%);
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .btn-sheen-invert:hover::after,
+  .btn-sheen-invert:focus-visible::after {
+    transform: translateX(120%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-sheen-invert::after {
+      display: none;
+    }
+  }
+
+  /* ============================================================
+     Mobile bottom-nav tab item — icon + label with a sliding
+     underline beneath the active label. The underline is
+     `currentColor`, inherited from .menu__item.active's grayscale
+     color, so it never needs its own accent-color token (no green,
+     no hardcoded hue — just the same black/white flip as every
+     other active state in the app).
+     ============================================================ */
+  .menu {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+  }
+
+  .menu__item {
+    position: relative;
+    display: flex;
+    min-width: 64px;
+    flex: 1 1 0%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    border-radius: 0.5rem;
+    color: rgb(100 116 139); /* slate-500 */
+    transition: color 0.2s ease;
+  }
+
+  .menu__item:hover {
+    color: rgb(51 65 85); /* slate-700 */
+  }
+
+  .dark .menu__item:hover {
+    color: rgb(203 213 225); /* slate-300 */
+  }
+
+  .menu__item.active {
+    color: rgb(15 23 42); /* slate-900 */
+  }
+
+  .dark .menu__item.active {
+    color: rgb(255 255 255);
+  }
+
+  .menu__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu__icon .icon {
+    height: 1.25rem;
+    width: 1.25rem;
+    stroke-width: 2;
+    transition: stroke-width 0.2s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .menu__item.active .menu__icon .icon {
+    stroke-width: 2.25;
+    transform: translateY(-1px);
+  }
+
+  .menu__text {
+    position: relative;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .menu__text.active {
+    font-weight: 700;
+  }
+
+  /* Underline spans the label's natural content width (100% of the
+     .menu__text box, which sizes to its text since .menu__item uses
+     align-items: center rather than stretch) and animates in/out via
+     transform: scaleX — GPU-only, no layout-property animation. */
+  .menu__text::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 2px;
+    width: 100%;
+    border-radius: 9999px;
+    background: currentColor;
+    transform: scaleX(0);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .menu__text.active::after {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu__icon .icon,
+    .menu__text::after {
+      transition: none;
+    }
   }
 }

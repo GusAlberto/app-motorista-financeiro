@@ -25,7 +25,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full h-12 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2"
+      className="w-full h-12 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
     >
       {pending ? (
         <>
@@ -107,7 +107,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
     <form action={handleSubmit} className="space-y-4">
       {/* Amount Input */}
       <div className="space-y-2">
-        <label htmlFor="amount" className="block text-sm font-semibold text-gray-900 dark:text-white">
+        <label htmlFor="amount" className="block text-sm font-semibold text-slate-900 dark:text-white">
           Valor (R$)
         </label>
         <input
@@ -120,7 +120,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
           step="0.01"
           min="0.01"
           autoFocus
-          className="w-full px-4 py-3 text-lg bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+          className="w-full px-4 py-3 text-lg bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400"
         />
         {errors.amount && (
           <p className="text-xs text-red-600 dark:text-red-400">{errors.amount}</p>
@@ -129,14 +129,14 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
 
       {/* Category Select */}
       <div className="space-y-2">
-        <label htmlFor="category" className="block text-sm font-semibold text-gray-900 dark:text-white">
+        <label htmlFor="category" className="block text-sm font-semibold text-slate-900 dark:text-white">
           Categoria
         </label>
         <select
           id="category"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white"
+          className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 text-slate-900 dark:text-white"
         >
           {INCOME_CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>
@@ -151,7 +151,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
 
       {/* Date Input */}
       <div className="space-y-2">
-        <label htmlFor="date" className="block text-sm font-semibold text-gray-900 dark:text-white">
+        <label htmlFor="date" className="block text-sm font-semibold text-slate-900 dark:text-white">
           Data
         </label>
         <input
@@ -159,7 +159,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white"
+          className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 text-slate-900 dark:text-white"
         />
         {errors.transaction_date && (
           <p className="text-xs text-red-600 dark:text-red-400">{errors.transaction_date}</p>
@@ -168,7 +168,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
 
       {/* Description Input */}
       <div className="space-y-2">
-        <label htmlFor="description" className="block text-sm font-semibold text-gray-900 dark:text-white">
+        <label htmlFor="description" className="block text-sm font-semibold text-slate-900 dark:text-white">
           Descrição (opcional)
         </label>
         <textarea
@@ -178,16 +178,16 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
           onChange={(e) => setDescription(e.target.value)}
           maxLength={500}
           rows={2}
-          className="w-full px-4 py-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-green-500 dark:focus:border-green-400 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
+          className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-400 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 resize-none"
         />
-        <p className="text-xs text-gray-500 dark:text-gray-400">
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           {description.length}/500
         </p>
       </div>
 
       {/* Submit Error */}
       {errors.submit && (
-        <div className="p-3 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg">
+        <div className="p-3 bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-xl">
           <p className="text-sm text-red-700 dark:text-red-200">{errors.submit}</p>
         </div>
       )}

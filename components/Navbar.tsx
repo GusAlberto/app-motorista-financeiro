@@ -4,73 +4,88 @@
  * components/Navbar.tsx
  *
  * Top navigation bar for the protected app area.
- * Mobile-first: 56px height, horizontal layout, sticky.
- * Contains: app logo/title, logout button, theme toggle.
+ * Desktop: logo + horizontal nav links + theme toggle + logout.
+ * Mobile: logo + theme toggle + logout — primary navigation moves to
+ * BottomNav (fixed tab bar), which sits in comfortable thumb reach.
  *
- * Touch targets: all interactive elements ≥ 48px (WCAG AA)
+ * Touch targets: all interactive elements ≥ 44px (WCAG AA)
  */
 
-import { LogOut, Sun, Moon } from 'lucide-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { LogOut, Sun, Moon, Wallet, LayoutDashboard, Receipt, Settings } from 'lucide-react'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useTheme } from '@/components/ThemeProvider'
 import { cn } from '@/lib/utils/cn'
 
+const NAV_LINKS = [
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/transactions', label: 'Transações', icon: Receipt },
+  { href: '/settings', label: 'Configurações', icon: Settings },
+]
+
 export function Navbar() {
   const { logout, user } = useAuth()
   const { resolvedTheme, toggleTheme } = useTheme()
+  const pathname = usePathname()
 
   return (
     <nav
-      className={cn(
-        // Base: mobile-first horizontal bar, sticky at top
-        'sticky top-0 z-50 flex h-14 w-full items-center justify-between',
-        // Horizontal padding: 16px mobile, 24px md+
-        'px-4 md:px-6',
-        // Background + border
-        'border-b border-gray-200 bg-white',
-        // Dark mode overrides
-        'dark:border-gray-800 dark:bg-gray-950',
-        // Subtle shadow for depth
-        'shadow-sm',
-      )}
+      className="sticky top-0 z-50 flex h-14 w-full items-center justify-between border-b border-slate-200 bg-white/90 px-4 shadow-sm backdrop-blur-lg md:px-6 dark:border-slate-800 dark:bg-slate-950/90"
       role="banner"
       aria-label="Navegação principal"
     >
-      {/* Logo / App Title */}
-      <div className="flex items-center gap-2">
-        <span
-          className={cn(
-            'text-lg font-bold tracking-tight',
-            'text-gray-900 dark:text-gray-50',
-          )}
-          aria-label="App Motorista"
-        >
-          App Motorista
-        </span>
+      {/* Logo + desktop nav links */}
+      <div className="flex items-center gap-8">
+        <Link href="/dashboard" className="flex items-center gap-2 font-display text-base font-bold text-slate-900 dark:text-white">
+          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-b from-slate-700 to-slate-950 text-white ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5">
+            <Wallet className="h-4 w-4" aria-hidden="true" />
+          </span>
+          <span className="hidden sm:inline">App Motorista</span>
+        </Link>
+
+        <div className="hidden items-center gap-1 md:flex">
+          {NAV_LINKS.map(({ href, label, icon: Icon }) => {
+            const isActive = pathname === href || pathname?.startsWith(`${href}/`)
+            return (
+              <Link
+                key={href}
+                href={href}
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-slate-100 text-slate-900 dark:bg-white/10 dark:text-white'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white',
+                )}
+              >
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {label}
+              </Link>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Right-side actions */}
+      <div className="flex items-center gap-1 md:gap-2">
         {user?.email && (
           <span
-            className="hidden text-xs text-gray-500 dark:text-gray-400 md:block"
+            className="hidden pr-2 text-xs text-slate-500 md:block dark:text-slate-500"
             aria-label={`Logado como ${user.email}`}
           >
             {user.email}
           </span>
         )}
-      </div>
 
-      {/* Right-side actions */}
-      <div className="flex items-center gap-1 md:gap-2">
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
           className={cn(
-            // Touch target: min 48px (WCAG AA)
-            'flex h-12 w-12 items-center justify-center rounded-lg',
-            // Visual styling
-            'text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900',
-            // Dark mode
-            'dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-50',
-            // Focus ring for keyboard navigation
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+            'flex h-11 w-11 items-center justify-center rounded-lg',
+            'text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900',
+            'dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-50',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white',
           )}
           aria-label={resolvedTheme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}
           title={resolvedTheme === 'dark' ? 'Tema claro' : 'Tema escuro'}
@@ -86,15 +101,11 @@ export function Navbar() {
         <button
           onClick={logout}
           className={cn(
-            // Touch target: min 48px (WCAG AA)
-            'flex h-12 items-center gap-2 rounded-lg px-3',
-            // Visual styling
-            'text-sm font-medium text-gray-600 transition-colors',
-            'hover:bg-gray-100 hover:text-gray-900',
-            // Dark mode
-            'dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-50',
-            // Focus ring
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+            'flex h-11 items-center gap-2 rounded-lg px-3',
+            'text-sm font-medium text-slate-600 transition-colors',
+            'hover:bg-slate-100 hover:text-slate-900',
+            'dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-50',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 dark:focus-visible:ring-white',
           )}
           aria-label="Sair da conta"
         >
