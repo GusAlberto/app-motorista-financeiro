@@ -5,11 +5,33 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'App Motorista',
     short_name: 'Motorista',
     description: 'Controle financeiro para motoristas de aplicativo.',
-    start_url: '/',
+    start_url: '/dashboard',
+    scope: '/',
     display: 'standalone',
+    orientation: 'portrait',
     background_color: '#ffffff',
-    theme_color: '#0a0a0a',
+    theme_color: '#2563eb',
     lang: 'pt-BR',
-    icons: [],
+    categories: ['finance', 'productivity', 'business'],
+    icons: [
+      {
+        src: '/icons/icon-192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icons/icon-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icons/icon-maskable-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+    ],
   }
 }

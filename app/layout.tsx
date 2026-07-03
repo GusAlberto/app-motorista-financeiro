@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
+import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -10,7 +11,16 @@ export const metadata: Metadata = {
   description:
     'Gerencie seus ganhos e despesas como motorista de aplicativo. Saiba em segundos se o seu dia está valendo a pena.',
   keywords: ['motorista', 'uber', 'financeiro', 'ganhos', 'despesas', 'controle'],
-  manifest: '/manifest.json',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'App Motorista',
+  },
+  icons: {
+    icon: '/icons/icon-192.png',
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
@@ -46,6 +56,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         suppressHydrationWarning
       >
         {children}
+        <ServiceWorkerRegistration />
       </body>
     </html>
   )
