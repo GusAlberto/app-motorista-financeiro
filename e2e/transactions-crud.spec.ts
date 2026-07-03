@@ -31,11 +31,10 @@ async function login(page: Page) {
 }
 
 // Fresh locator for the transaction row carrying our unique marker — the list
-// re-renders after each mutation (router.refresh), so never cache it.
+// re-renders after each mutation (router.refresh), so never cache it. Scoped to
+// the row's data-testid so it's resilient to styling changes.
 function rowFor(page: Page, marker: string) {
-  return page
-    .getByText(marker, { exact: true })
-    .locator('xpath=ancestor::div[contains(@class,"justify-between")][1]')
+  return page.getByTestId('transaction-item').filter({ hasText: marker })
 }
 
 test.describe('transactions CRUD (authenticated)', () => {

@@ -52,6 +52,7 @@ export function TransactionItem({
 
   return (
     <div
+      data-testid="transaction-item"
       className="flex items-center justify-between gap-4 px-4 py-4 transition-colors hover:bg-slate-50 sm:px-6 dark:hover:bg-slate-800/60"
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
