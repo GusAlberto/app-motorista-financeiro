@@ -56,3 +56,7 @@ coverage/
 # Python (ui-ux-pro-max skill)
 __pycache__/
 *.pyc
+
+# impeccable skill — local/machine-specific runtime state (not shared config)
+.impeccable/*.local.json
+.impeccable/hook.cache.json
