@@ -9,7 +9,7 @@ interface IncomeFormData {
   amount: number
   category: string
   description?: string
-  transaction_date: Date
+  transaction_date: string // ISO date string (YYYY-MM-DD) in user's local timezone
 }
 
 interface IncomeFormProps {
@@ -57,7 +57,7 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
         amount: parseFloat(amount),
         category,
         description: description || undefined,
-        transaction_date: new Date(date),
+        transaction_date: date, // Send as ISO string, not Date — server treats as local date
       }
 
       // Basic validation
@@ -75,7 +75,9 @@ export function IncomeForm({ onSuccess, onError, isPending: externalPending }: I
         newErrors.transaction_date = 'Data é obrigatória'
       }
 
-      if (new Date(date) > new Date()) {
+      // Check if date is in the future using date string comparison
+      const todayStr = new Date().toISOString().split('T')[0]
+      if (date > todayStr) {
         newErrors.transaction_date = 'A data não pode ser no futuro'
       }
 
