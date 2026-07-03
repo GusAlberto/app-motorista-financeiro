@@ -11,6 +11,7 @@
 
 import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
+import { CheckCircle2 } from 'lucide-react'
 import { forgotPasswordAction } from './actions'
 import { cn } from '@/lib/utils/cn'
 
@@ -33,19 +34,17 @@ export default function ForgotPasswordPage() {
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900 text-center">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div
-          className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-400 mx-auto"
+          className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
           aria-hidden="true"
         >
-          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
+          <CheckCircle2 className="h-6 w-6" />
         </div>
-        <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-50">
+        <h2 className="mb-2 font-display text-xl font-bold text-slate-900 dark:text-slate-50">
           Email enviado!
         </h2>
-        <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
           Se este email estiver cadastrado, você receberá um link para redefinir sua senha.
           Verifique sua caixa de entrada (e o spam).
         </p>
@@ -53,9 +52,9 @@ export default function ForgotPasswordPage() {
           href="/login"
           className={cn(
             'flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-blue-600 text-base font-semibold text-white',
-            'transition-colors hover:bg-blue-700',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+            'bg-amber-500 text-base font-semibold text-slate-950',
+            'transition-colors hover:bg-amber-400',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
           )}
         >
           Voltar ao login
@@ -65,11 +64,11 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-      <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-50">
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <h2 className="mb-2 font-display text-xl font-bold text-slate-900 dark:text-slate-50">
         Recuperar senha
       </h2>
-      <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+      <p className="mb-6 text-sm text-slate-600 dark:text-slate-400">
         Insira seu email e enviaremos um link para você redefinir sua senha.
       </p>
 
@@ -77,7 +76,7 @@ export default function ForgotPasswordPage() {
         <div className="flex flex-col gap-1.5">
           <label
             htmlFor="email"
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="text-sm font-medium text-slate-700 dark:text-slate-300"
           >
             Email
           </label>
@@ -90,11 +89,11 @@ export default function ForgotPasswordPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="seu@email.com"
             className={cn(
-              'h-12 w-full rounded-xl border border-gray-300 px-4',
-              'bg-white text-base text-gray-900 placeholder-gray-400',
-              'transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-              'dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-500',
-              'dark:focus:border-blue-400',
+              'h-12 w-full rounded-xl border border-slate-300 px-4',
+              'bg-white text-base text-slate-900 placeholder-slate-400',
+              'transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20',
+              'dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder-slate-500',
+              'dark:focus:border-amber-400',
             )}
             disabled={loading}
           />
@@ -105,9 +104,9 @@ export default function ForgotPasswordPage() {
           disabled={loading || !email}
           className={cn(
             'flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-blue-600 text-base font-semibold text-white',
-            'transition-colors hover:bg-blue-700 active:bg-blue-800',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+            'bg-amber-500 text-base font-semibold text-slate-950',
+            'transition-colors hover:bg-amber-400 active:bg-amber-600',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
             'disabled:cursor-not-allowed disabled:opacity-50',
           )}
         >
@@ -115,11 +114,11 @@ export default function ForgotPasswordPage() {
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+      <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
         Lembrou a senha?{' '}
         <Link
           href="/login"
-          className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="font-medium text-amber-700 hover:underline dark:text-amber-400"
         >
           Entrar
         </Link>

@@ -5,18 +5,24 @@
  *
  * Login page — email + password form.
  * Mobile-first, full-width, large touch targets.
- * On success: redirects to /app/dashboard (via Server Action).
+ * On success: redirects to /dashboard (via Server Action).
  * On error: displays inline error message.
  */
 
 import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
-import type { Metadata } from 'next'
 import { loginAction } from './actions'
 import { cn } from '@/lib/utils/cn'
 
 // Note: 'use client' components cannot export metadata; parent layout handles title
-// export const metadata: Metadata = { title: 'Entrar' }
+
+const inputClasses = cn(
+  'h-12 w-full rounded-xl border border-slate-300 px-4',
+  'bg-white text-base text-slate-900 placeholder-slate-400',
+  'transition-colors focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20',
+  'dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:placeholder-slate-500',
+  'dark:focus:border-amber-400',
+)
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -38,7 +44,7 @@ export default function LoginPage() {
         if (result.error.includes('Invalid login credentials')) {
           setError('Email ou senha incorretos. Verifique seus dados e tente novamente.')
         } else {
-          setError('Erro ao fazer login. Tente novamente em instantes.')
+          setError(result.error.includes('Muitas tentativas') ? result.error : 'Erro ao fazer login. Tente novamente em instantes.')
         }
         return
       }
@@ -53,8 +59,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-      <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-gray-50">
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <h2 className="mb-6 font-display text-xl font-bold text-slate-900 dark:text-slate-50">
         Entrar na sua conta
       </h2>
 
@@ -63,7 +69,7 @@ export default function LoginPage() {
         {error && (
           <div
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-400"
+            className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-400"
           >
             {error}
           </div>
@@ -73,7 +79,7 @@ export default function LoginPage() {
         <div className="flex flex-col gap-1.5">
           <label
             htmlFor="email"
-            className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            className="text-sm font-medium text-slate-700 dark:text-slate-300"
           >
             Email
           </label>
@@ -85,13 +91,7 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="seu@email.com"
-            className={cn(
-              'h-12 w-full rounded-xl border border-gray-300 px-4',
-              'bg-white text-base text-gray-900 placeholder-gray-400',
-              'transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-              'dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-500',
-              'dark:focus:border-blue-400',
-            )}
+            className={inputClasses}
             disabled={loading}
           />
         </div>
@@ -101,13 +101,13 @@ export default function LoginPage() {
           <div className="flex items-center justify-between">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-slate-700 dark:text-slate-300"
             >
               Senha
             </label>
             <Link
               href="/forgot-password"
-              className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+              className="text-sm font-medium text-amber-700 hover:underline dark:text-amber-400"
             >
               Esqueceu a senha?
             </Link>
@@ -120,13 +120,7 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className={cn(
-              'h-12 w-full rounded-xl border border-gray-300 px-4',
-              'bg-white text-base text-gray-900 placeholder-gray-400',
-              'transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20',
-              'dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 dark:placeholder-gray-500',
-              'dark:focus:border-blue-400',
-            )}
+            className={inputClasses}
             disabled={loading}
           />
         </div>
@@ -137,9 +131,9 @@ export default function LoginPage() {
           disabled={loading || !email || !password}
           className={cn(
             'mt-2 flex h-12 w-full items-center justify-center rounded-xl',
-            'bg-blue-600 text-base font-semibold text-white',
-            'transition-colors hover:bg-blue-700 active:bg-blue-800',
-            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+            'bg-amber-500 text-base font-semibold text-slate-950',
+            'transition-colors hover:bg-amber-400 active:bg-amber-600',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2',
             'disabled:cursor-not-allowed disabled:opacity-50',
           )}
         >
@@ -148,11 +142,11 @@ export default function LoginPage() {
       </form>
 
       {/* Sign up link */}
-      <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+      <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-400">
         Não tem uma conta?{' '}
         <Link
           href="/signup"
-          className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+          className="font-medium text-amber-700 hover:underline dark:text-amber-400"
         >
           Criar conta gratuita
         </Link>
