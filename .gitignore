@@ -52,3 +52,7 @@ coverage/
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Python (ui-ux-pro-max skill)
+__pycache__/
+*.pyc
