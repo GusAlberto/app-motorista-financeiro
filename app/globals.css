@@ -183,13 +183,6 @@
     }
   }
 
-  /* Subtle dot-grid texture for the always-dark floating desktop navbar —
-     evokes a technical/premium surface without adding color. */
-  .dot-texture {
-    background-image: radial-gradient(circle, rgb(255 255 255 / 0.35) 1px, transparent 1px);
-    background-size: 15px 15px;
-  }
-
   /* ============================================================
      Mobile bottom-nav tab item — icon + label with a sliding
      underline beneath the active label. The underline is

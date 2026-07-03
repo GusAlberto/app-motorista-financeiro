@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { Wallet } from 'lucide-react';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export default function PublicLayout({
   children,
@@ -7,66 +9,73 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
+    <ThemeProvider>
     <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
       {/* Navbar — mobile: full-width bar, theme-adaptive (unchanged). */}
       <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur-lg md:hidden dark:border-slate-800 dark:bg-slate-950/80">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold text-slate-900 dark:text-white">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-3">
+          <Link href="/" className="flex shrink-0 items-center gap-2 whitespace-nowrap font-display text-base font-bold text-slate-900 dark:text-white">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-b from-slate-700 to-slate-950 text-white shadow-sm ring-1 ring-white/10 dark:from-white dark:to-slate-200 dark:text-slate-950 dark:ring-black/5">
               <Wallet className="h-4 w-4" aria-hidden="true" />
             </span>
             app-motorista
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Link
               href="/login"
-              className="inline-flex h-9 items-center justify-center rounded-full border-2 border-slate-900 px-4 text-sm font-semibold text-slate-900 transition-colors hover:bg-slate-900 hover:text-white dark:border-white/70 dark:text-white dark:hover:bg-white dark:hover:text-slate-950"
+              className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-full px-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white"
             >
               Login
             </Link>
             <Link
               href="/signup"
-              className="btn-primary btn-sheen inline-flex h-9 items-center justify-center rounded-full px-5 text-sm font-bold shadow-md shadow-slate-900/20 transition-shadow hover:shadow-lg dark:shadow-black/40"
+              className="btn-primary btn-sheen inline-flex h-9 items-center justify-center whitespace-nowrap rounded-full px-3.5 text-sm font-bold shadow-md shadow-slate-900/20 transition-shadow hover:shadow-lg dark:shadow-black/40"
             >
               Criar conta
             </Link>
+            <ThemeToggle className="text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus-visible:ring-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-white" />
+
           </div>
         </div>
       </nav>
 
       {/* Navbar — desktop: floating dark pill, deliberately NOT theme-
           adaptive. Chrome stays constant premium-black regardless of the
-          page's light/dark toggle, echoing the always-dark floating nav
-          pattern from the reference (dotted texture, pill CTAs) without
-          reusing any of its actual assets. */}
+          page's light/dark toggle, echoing the always-dark floating pill
+          from the reference (clean solid surface, pill CTAs) without
+          reusing any of its actual assets. The center links are absolutely
+          centered so they sit at the pill's true midpoint rather than
+          drifting with the unequal widths of the logo and the right
+          cluster (which justify-between alone would cause). */}
       <div className="sticky top-4 z-50 hidden px-4 md:block">
-        <nav className="dot-texture relative mx-auto flex h-16 max-w-4xl items-center justify-between overflow-hidden rounded-full border border-white/10 bg-slate-950 px-3 shadow-2xl shadow-black/40">
-          <Link href="/" className="relative z-10 flex items-center gap-2 pl-1">
+        <nav className="relative mx-auto flex h-16 max-w-4xl items-center justify-between rounded-full border border-white/10 bg-slate-950 px-4 shadow-2xl shadow-black/40">
+          <Link href="/" className="relative z-10 flex items-center gap-2.5">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white ring-1 ring-white/10">
               <Wallet className="h-4 w-4" aria-hidden="true" />
             </span>
-            <span className="font-display text-base font-bold text-white">app-motorista</span>
+            <span className="font-display text-base font-bold tracking-tight text-white">app-motorista</span>
           </Link>
 
-          <div className="relative z-10 flex items-center gap-8">
-            <Link href="/how-it-works" className="text-sm font-medium text-white/70 transition-colors hover:text-white">
+          <div className="absolute left-1/2 top-1/2 z-0 flex -translate-x-1/2 -translate-y-1/2 items-center gap-8">
+            <Link href="/how-it-works" className="text-sm font-medium text-white/60 transition-colors hover:text-white">
               Como funciona
             </Link>
-            <Link href="/faq" className="text-sm font-medium text-white/70 transition-colors hover:text-white">
+            <Link href="/faq" className="text-sm font-medium text-white/60 transition-colors hover:text-white">
               FAQ
             </Link>
           </div>
 
-          <div className="relative z-10 flex items-center gap-1">
+          <div className="relative z-10 flex items-center gap-2">
+            <ThemeToggle className="text-white/70 hover:bg-white/10 hover:text-white focus-visible:ring-white" />
             <Link
               href="/login"
-              className="inline-flex h-9 items-center justify-center rounded-full px-4 text-sm font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+              className="inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-semibold text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             >
               Login
             </Link>
             <Link
               href="/signup"
-              className="btn-sheen-invert inline-flex h-9 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-slate-950 shadow-md shadow-black/20 transition-shadow hover:shadow-lg"
+              className="btn-sheen-invert inline-flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-bold text-slate-950 shadow-md shadow-black/20 transition-shadow hover:shadow-lg"
             >
               Criar conta
             </Link>
@@ -121,5 +130,6 @@ export default function PublicLayout({
         </div>
       </footer>
     </div>
+    </ThemeProvider>
   );
 }
