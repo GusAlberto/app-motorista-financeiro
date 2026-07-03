@@ -10,6 +10,10 @@ const supabaseWsOrigin = supabaseOrigin.replace(/^https:/, 'wss:')
 
 const isDev = process.env.NODE_ENV !== 'production'
 
+// Dev-only allowance so impeccable live mode can load.
+const __impeccableLiveDev =
+  process.env.NODE_ENV === "development" ? " http://localhost:8400" : ""
+
 // Content-Security-Policy — no nonce/strict-dynamic setup (keeps this a
 // pure header-only, zero-runtime-cost change) but still meaningfully
 // restricts script/connect/frame origins, which is CSP's main XSS/data-
@@ -17,11 +21,11 @@ const isDev = process.env.NODE_ENV !== 'production'
 // dev, where Next's webpack HMR needs it — production never gets it.
 const cspDirectives = [
   `default-src 'self'`,
-  `script-src 'self' 'unsafe-inline'${isDev ? ` 'unsafe-eval'` : ''}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? ` 'unsafe-eval'` : ''}${__impeccableLiveDev}`,
   `style-src 'self' 'unsafe-inline'`,
   `img-src 'self' data: blob: ${supabaseOrigin}`,
   `font-src 'self' data:`,
-  `connect-src 'self' ${supabaseOrigin} ${supabaseWsOrigin}`,
+  `connect-src 'self' ${supabaseOrigin} ${supabaseWsOrigin}${__impeccableLiveDev}`,
   `frame-ancestors 'none'`,
   `base-uri 'self'`,
   `form-action 'self'`,
