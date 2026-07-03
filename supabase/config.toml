@@ -99,11 +99,10 @@ port = 54323
 # External URL of the API server that frontend connects to.
 api_url = "http://127.0.0.1"
 
-[local_smtp]
-# Enable local email testing server.
+[inbucket]
+# Enable local email testing server. Emails sent with SMTP during local
+# development are captured here (web UI on `port`).
 enabled = true
-# Port to use for the email testing server web interface.
-# Emails sent with SMTP during local development are captured here.
 port = 54324
 smtp_port = 54325
 pop3_port = 54326

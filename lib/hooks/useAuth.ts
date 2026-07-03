@@ -73,11 +73,11 @@ export function useAuth(): AuthContext {
 
   /**
    * Sign out the current user.
-   * Clears Supabase session and redirects to /login.
+   * Clears Supabase session and redirects to the home page (/).
    */
   const logout = useCallback(async () => {
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push('/')
     router.refresh()
   }, [supabase, router])
 
