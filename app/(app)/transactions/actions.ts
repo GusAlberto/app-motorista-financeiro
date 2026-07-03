@@ -81,7 +81,7 @@ export async function createTransaction(data: any): Promise<ActionResult> {
       console.error('Transaction insert error:', insertError)
       return {
         success: false,
-        error: 'Failed to create transaction',
+        error: `Failed to create transaction: ${insertError.message}`,
       }
     }
 
@@ -167,7 +167,7 @@ export async function updateTransaction(
       console.error('Transaction update error:', updateError)
       return {
         success: false,
-        error: 'Failed to update transaction',
+        error: `Failed to update transaction: ${updateError.message}`,
       }
     }
 
@@ -234,9 +234,12 @@ export async function deleteTransaction(id: string): Promise<ActionResult> {
 
     if (deleteError) {
       console.error('Transaction delete error:', deleteError)
+      // Surface the real Postgres error to speed up diagnosis (solo app,
+      // owner testing their own data). Revert to a generic message once the
+      // root cause is fixed.
       return {
         success: false,
-        error: 'Failed to delete transaction',
+        error: `Failed to delete transaction: ${deleteError.message}`,
       }
     }
 

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
 import { INCOME_CATEGORIES, EXPENSE_CATEGORIES } from '@/lib/validation/transaction'
+import { getLocalDateString } from '@/lib/utils/date'
 import type { Database } from '@/types/database'
 
 type Transaction = Database['public']['Tables']['transactions']['Row']
@@ -51,7 +52,7 @@ export function EditTransactionModal({
         newErrors.category = 'Categoria é obrigatória'
       }
 
-      if (new Date(transactionDate) > new Date()) {
+      if (transactionDate > getLocalDateString()) {
         newErrors.transactionDate = 'A data não pode ser no futuro'
       }
 
@@ -61,12 +62,14 @@ export function EditTransactionModal({
         return
       }
 
-      // Call onSave
+      // Call onSave — transaction_date must be a "YYYY-MM-DD" string
+      // (the schema expects a string; wrapping it in new Date() sent a Date
+      // object and triggered "Expected string, received date").
       await onSave(transaction.id, {
         amount: parseFloat(amount),
         category,
         description: description || undefined,
-        transaction_date: new Date(transactionDate),
+        transaction_date: transactionDate,
       })
 
       onClose()
