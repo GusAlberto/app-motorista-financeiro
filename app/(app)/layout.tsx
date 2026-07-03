@@ -18,7 +18,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Page content */}
       <main
-        className="mx-auto w-full max-w-2xl px-4 py-6 md:px-6"
+        className="mx-auto w-full max-w-6xl px-4 py-6 md:px-6"
         id="main-content"
       >
         {children}
