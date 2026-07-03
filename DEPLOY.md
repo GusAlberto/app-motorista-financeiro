@@ -50,6 +50,32 @@ O pipeline (`.github/workflows/ci.yml`) roda automaticamente em cada push/PR par
 
 A Vercel faz deploy automático a cada push na branch `main`.
 
+### Teste E2E de CRUD autenticado (create → edit → delete)
+
+`e2e/transactions-crud.spec.ts` exercita o ciclo completo pela UI contra um
+Supabase real — é a camada que pega bugs de RLS/banco (como o do soft-delete)
+**antes** do deploy. Ele **se auto-pula** se as variáveis abaixo não estiverem
+definidas, então o CI padrão continua verde sem elas.
+
+Para rodá-lo (localmente ou no CI):
+
+| Variável | Valor |
+|----------|-------|
+| `E2E_EMAIL` | email de uma **conta de teste dedicada** (descartável) |
+| `E2E_PASSWORD` | senha dessa conta |
+
+```bash
+# 1. Crie a conta de teste uma vez (signup no app). Como "Confirm email" está
+#    desabilitado no MVP, ela já fica utilizável.
+# 2. Exporte as credenciais e rode:
+E2E_EMAIL="teste@exemplo.com" E2E_PASSWORD="..." npm run test:e2e
+```
+
+⚠️ O teste cria e faz soft-delete de uma transação real. Use uma **conta de
+teste dedicada** — idealmente um projeto Supabase separado — para não poluir
+seus dados. O teste roda no projeto desktop (`chromium`); no mobile ele pula
+(o ponto de entrada de criação é diferente).
+
 ## 5. Verificação (checklist)
 
 - [ ] Home carrega e é indexável (`/`)

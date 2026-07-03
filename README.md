@@ -59,6 +59,8 @@ npm run dev            # servidor de desenvolvimento
 npm run build          # build de produção
 npm test               # testes unitários (Vitest)
 npm run test:e2e       # testes E2E (Playwright — precisa de build)
+#   inclui o ciclo CRUD autenticado (create→edit→delete) quando
+#   E2E_EMAIL / E2E_PASSWORD estão definidos — ver DEPLOY.md
 npm run type-check     # checagem de tipos (tsc --noEmit)
 npm run lint           # ESLint
 ```
