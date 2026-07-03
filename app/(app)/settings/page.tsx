@@ -197,6 +197,25 @@ export default function SettingsPage() {
     setPasswordErrors({})
     setPasswordLoading(true)
 
+    // Re-authenticate with the current password before changing it.
+    // supabase.auth.updateUser() only requires an active session — without
+    // this step, anyone who gets hold of a live session (stolen cookie,
+    // unlocked device) could silently change the password without ever
+    // knowing the original one. The "Senha atual" field was previously
+    // collected but never actually verified against anything.
+    if (user?.email) {
+      const { error: reauthError } = await supabase.auth.signInWithPassword({
+        email: user.email,
+        password: currentPassword,
+      })
+
+      if (reauthError) {
+        setPasswordLoading(false)
+        setPasswordErrors({ currentPassword: 'Senha atual incorreta.' })
+        return
+      }
+    }
+
     const { error } = await supabase.auth.updateUser({
       password: newPassword,
     })
@@ -323,6 +342,7 @@ export default function SettingsPage() {
             onChange={setCurrentPassword}
             placeholder="••••••••"
             disabled={passwordLoading}
+            error={passwordErrors.currentPassword}
           />
 
           <FormField
