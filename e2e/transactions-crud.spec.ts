@@ -27,7 +27,21 @@ async function login(page: Page) {
   await page.getByLabel('Email').fill(EMAIL!)
   await page.getByLabel('Senha').fill(PASSWORD!)
   await page.getByRole('button', { name: /entrar/i }).click()
-  await page.waitForURL(/\/dashboard/)
+
+  // Land on the dashboard (success) OR surface the login error fast. The 60s
+  // budget covers a cold dev server compiling /dashboard on first hit; running
+  // against a production build (npm run build) is much faster — see DEPLOY.md.
+  const alert = page.getByRole('alert')
+  const outcome = await Promise.race([
+    page.waitForURL(/\/dashboard/, { timeout: 60_000 }).then(() => 'ok' as const),
+    alert.waitFor({ state: 'visible', timeout: 60_000 }).then(() => 'error' as const),
+  ])
+  if (outcome === 'error') {
+    throw new Error(
+      `Login failed: "${(await alert.textContent())?.trim()}" — check E2E_EMAIL/E2E_PASSWORD ` +
+        'and that the Supabase test user exists and is confirmed.',
+    )
+  }
 }
 
 // Fresh locator for the transaction row carrying our unique marker — the list
